@@ -26,6 +26,12 @@
             <version>10.9.1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbytools</artifactId>
+            <version>10.9.1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
