@@ -4,7 +4,6 @@
  */
 package com.qahit.jbug;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,71 +15,43 @@ import java.sql.Statement;
 public class SQL
 {
 
-    public static ResultSet query(String sql)
+    public static ResultSet query(String sql) throws SQLException
     {
-        try
-        {
-            Statement stmt = Main.dbConnection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            stmt.close();
-            return rs;
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        ResultSet rs;
+        Statement stmt = Main.dbConnection.createStatement();
+        rs = stmt.executeQuery(sql);
+        stmt.close();
+        return rs;
     }
     
-    public static boolean queryNoRes(String sql)
+    public static boolean queryNoRes(String sql) throws SQLException
     {
-        try
+        boolean result;
+        try (Statement stmt = Main.dbConnection.createStatement())
         {
-            Statement stmt = Main.dbConnection.createStatement();
-            boolean result=stmt.execute(sql);
+            result = stmt.execute(sql);
             stmt.close();
-            return result;
         }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        return result;
     }
 
-    public static String getStringVar(String varName)
+    public static String getStringVar(String varName) throws SQLException
     {
-        try
+        ResultSet rs = query("select val from vars where var='" + varName + "'");
+        if (rs==null || rs.isClosed() || !rs.next())
         {
-            ResultSet rs = query("select val from vars where var='" + varName + "'");
-            if (!rs.next())
-            {
-                return null;
-            }
-            return rs.getString("val");
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
             return null;
         }
+        return rs.getString("val");
     }
 
-    public static void setStringVar(String name, String value)
+    public static void setStringVar(String name, String value) throws SQLException
     {
-        try
-        {
-            queryNoRes("delete from vars where var='"+name+"'");
-            queryNoRes("insert into vars(var,val) values ('"+name+"','"+value+"')");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        queryNoRes("delete from vars where var='"+name+"'");
+        queryNoRes("insert into vars(var,val) values ('"+name+"','"+value+"')");
     }
 
-    static public int getDBVersion()
+    static public int getDBVersion() throws SQLException
     {
         String dbVersionString = getStringVar("dbversion");
         if (dbVersionString == null)
