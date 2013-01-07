@@ -11,12 +11,17 @@
         <script src="/js/main.js"></script>
         <link rel="stylesheet" href="/css/jbug.css"/>
         <link rel="stylesheet" href="/css/forms.css"/>
+        <link rel="stylesheet" href="/css/main.css"/>
         <link rel="stylesheet" href="/css/font-awesome.css"/>
     </head>
-    <body>
-        <jsp:include page="header.jsp"></jsp:include>
-        <script type="text/javascript">checkUser();</script>
-        <h1>Hello World!</h1>
-        <%=Main.getConnectionInfo()%>
+    <body onresize="setMainContentHeight();">
+        <div id="full">
+            <jsp:include page="header.jsp"></jsp:include>
+            <div id="main" class="main">Hello</div>
+            <script type="text/javascript">
+                checkUser();
+                setMainContentHeight();
+            </script>
+        </div>
     </body>
 </html>
