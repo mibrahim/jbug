@@ -1,0 +1,1 @@
+<%@page import="com.qahit.jbug.Main"%><%@page contentType="text/html" pageEncoding="UTF-8"%><%=Main.getData(request)%>
