@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 public final class SQL
 {
     // Static initialization
-    public static SQL singleInstance=new SQL();
-    
+
+    public static SQL singleInstance = new SQL();
     /**
      * Store the database connection
      */
@@ -52,7 +52,6 @@ public final class SQL
         super.finalize();
         dbConnection.close();
     }
-
 
     /**
      * Checks and upgrades the database version if necessary
@@ -141,7 +140,6 @@ public final class SQL
         }
     }
 
-
     public static ResultSet query(String sql) throws SQLException
     {
         ResultSet rs;
@@ -149,34 +147,31 @@ public final class SQL
         rs = stmt.executeQuery(sql);
         return rs;
     }
-    
+
     public static boolean queryNoRes(String sql) throws SQLException
     {
         boolean result;
-        try (Statement stmt = dbConnection.createStatement())
-        {
-            result = stmt.execute(sql);
-            stmt.close();
-        }
+        Statement stmt = dbConnection.createStatement();
+        result = stmt.execute(sql);
         return result;
     }
 
     public static String getStringVar(String varName) throws SQLException
     {
         ResultSet rs = query("select val from vars where var='" + varName + "'");
-        if (rs==null || rs.isClosed() || !rs.next())
+        if (rs == null || rs.isClosed() || !rs.next())
         {
             return null;
         }
-        String value=rs.getString("val");
+        String value = rs.getString("val");
         rs.close();
         return value;
     }
 
     public static void setStringVar(String name, String value) throws SQLException
     {
-        queryNoRes("delete from vars where var='"+name+"'");
-        queryNoRes("insert into vars(var,val) values ('"+name+"','"+value+"')");
+        queryNoRes("delete from vars where var='" + name + "'");
+        queryNoRes("insert into vars(var,val) values ('" + name + "','" + value + "')");
     }
 
     static public int getDBVersion() throws SQLException
