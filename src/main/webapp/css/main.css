@@ -1,45 +1,5 @@
 /* Main CSS */
-@import url('http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Sorts+Mill+Goudy');
-
-@font-face {
-    font-family: 'gtw';
-    src: url('/files/fnt/gtw.ttf');
-}
-
-@font-face {
-    font-family: 'steelfish';
-    src: url('/files/fnt/steelfish.ttf');
-}
-
-@font-face {
-    font-family: 'effloresce';
-    src: url('/files/fnt/effloresce-regular.ttf');
-}
-
-@font-face {
-    font-family: 'effloresceb';
-    src: url('/files/fnt/effloresce-bold.ttf');
-}
-
-@font-face {
-    font-family: 'intuitive';
-    src: url('/files/fnt/intuitive.ttf');
-}
-
-@font-face {
-    font-family: 'osp-din';
-    src: url('/files/fnt/OSP-DIN.ttf');
-}
-
-@font-face {
-    font-family: 'djvsc';
-    src: url('/files/fnt/DejaVuSansCondensed.ttf');
-}
-
-@font-face {
-    font-family: 'djvscb';
-    src: url('/files/fnt/DejaVuSansCondensed-Bold.ttf');
-}
+@import url('http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Sorts+Mill+Goudy|Coda:400,800');
 
 .doccontainer{
     width:1024px;

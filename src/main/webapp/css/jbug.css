@@ -38,3 +38,81 @@ body{
     margin: 5px;
     padding: 5px;
 }
+
+.status{
+    font-family: Droid Sans Mono;
+    font-size: 10pt;
+    text-align: center;
+    width: 100%;
+    color: #000;
+}
+
+.titlerow{
+    background: #000;
+    color: #fff;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.bugsummaryrow td{
+    border-bottom: #ccc solid 1px;
+    font-family: Droid Sans Mono;
+    font-size: 12px;
+}
+
+.bugsummaryrow:hover{
+    background: #eef;
+}
+
+.bugsummarydesctd{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.summarydesc{
+    color: #888;
+}
+
+.buglight{
+    background: #dde;
+}
+
+.bugdark{
+    background: #edd;
+}
+
+.navpg{
+    background: #a60;
+    color: #fff;
+    border: #840 solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: Droid Sans Mono;
+}
+
+.navpg:hover{
+    background: #c82;
+    color: #fff;
+}
+
+.currentpg{
+    background: #c82;
+    color: #fff;
+    border: #840 solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: Droid Sans Mono;
+}
+
+.currentpg:hover{
+    background: #ea4;
+    color: #fff;
+}

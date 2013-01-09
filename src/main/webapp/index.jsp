@@ -21,6 +21,8 @@
             <script type="text/javascript">
                 checkUser();
                 setMainContentHeight();
+                updateBugStatusBar();
+                showOpenBugs();
             </script>
         </div>
     </body>

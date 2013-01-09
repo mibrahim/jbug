@@ -18,68 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 public class Main
 {
 
-    static String bugRowToJSON(ResultSet rs) throws SQLException
-    {
-        ResultSetMetaData metaData = rs.getMetaData();
-        System.out.println("We found: " + metaData.getColumnCount() + " coulmns");
-        StringBuilder b = new StringBuilder();
-        for (int i = 1; i <= metaData.getColumnCount(); i++)
-        {
-            if (b.length() > 0)
-            {
-                b.append(",\n");
-            }
-
-            if (b.length() == 0)
-            {
-                b.append("{\n");
-            }
-
-            String columnName = metaData.getColumnName(i);
-            String type = metaData.getColumnTypeName(i);
-            System.out.println("Column #" + i + ": " + columnName + " type:" + type);
-
-            b
-                    .append("\"")
-                    .append(columnName)
-                    .append("\":\"");
-
-            switch (type)
-            {
-                case "LONG VARCHAR":
-                case "VARCHAR":
-                    String s = rs.getString(columnName);
-                    b.append((s == null) ? "" : s);
-                    break;
-
-                case "INTEGER":
-                    b.append(rs.getInt(columnName));
-                    break;
-
-                case "BIGINT":
-                    b.append(rs.getLong(columnName));
-                    break;
-
-                case "CLOB":
-                    Clob clob = rs.getClob(columnName);
-                    b.append((clob == null) ? "" : clob.toString());
-                    break;
-
-                default:
-                    throw new SQLException("Unknown column type: " + type);
-            }
-
-            b.append("\"");
-        }
-        b.append("\n}");
-
-        return b.toString();
-    }
-
     public static String getData(HttpServletRequest request) throws SQLException
     {
         String pget = request.getParameter("get");
         String pfor = request.getParameter("for");
+        String condition = request.getParameter("condition");
+        String orderby = request.getParameter("orderby");
 
         switch (pget)
         {
@@ -112,7 +56,7 @@ public class Main
                 return res.toString();
 
             case "openbugcount":
-                rs = SQL.query("select count(*) as count from bugs where status in ('unconfirmed','new','assigned','reopen','ready')");
+                rs = SQL.query("select count(*) as count from bugs where status in (0,1,2,3,4,5,6)");
                 String count = "0";
                 if (rs.next())
                 {
@@ -122,7 +66,7 @@ public class Main
                 return count;
 
             case "closedbugcount":
-                rs = SQL.query("select count(*) as count from bugs where status in ('resolved','verified')");
+                rs = SQL.query("select count(*) as count from bugs where status in (7,8)");
                 count = "0";
                 if (rs.next())
                 {
@@ -132,7 +76,7 @@ public class Main
                 return count;
 
             case "openbugids":
-                rs = SQL.query("select bug_id from bugs where status in ('unconfirmed','new','assigned','reopen','ready') order by creation_ts");
+                rs = SQL.query("select bug_id from bugs where status in (0,1,2,3,4,5,6) order by severity,priority,creation_ts");
                 StringBuilder b = new StringBuilder();
                 while (rs.next())
                 {
@@ -146,7 +90,7 @@ public class Main
                 return b.toString();
 
             case "closedbugids":
-                rs = SQL.query("select bug_id from bugs where status in ('resolved','verified') order by creation_ts");
+                rs = SQL.query("select bug_id from bugs where status in (7,8) order by creation_ts");
                 b = new StringBuilder();
                 while (rs.next())
                 {
@@ -164,7 +108,7 @@ public class Main
                 b = new StringBuilder();
                 if (rs.next())
                 {
-                    b.append(bugRowToJSON(rs));
+                    b.append(SQL.currentRowToJSON(rs));
                 }
                 else
                 {
@@ -184,9 +128,9 @@ public class Main
                     }
                     if (b.length() == 0)
                     {
-                        b.append("{");
+                        b.append("{\"bugs\":[");
                     }
-                    b.append(bugRowToJSON(rs));
+                    b.append(SQL.currentRowToJSON(rs));
                 }
                 if (b.length() == 0)
                 {
@@ -194,7 +138,62 @@ public class Main
                 }
                 else
                 {
-                    b.append("\n}");
+                    b.append("\n]}");
+                }
+                rs.close();
+                return b.toString();
+
+            case "bugssummaries":
+                rs = SQL.query("select bug_id,title,description,assigned_to,reporter,severity,status,creation_ts,description,priority from bugs where bug_id in (" + pfor + ")");
+                b = new StringBuilder();
+                while (rs.next())
+                {
+                    if (b.length() > 0)
+                    {
+                        b.append(",\n");
+                    }
+                    if (b.length() == 0)
+                    {
+                        b.append("{\"bugs\":[");
+                    }
+                    b.append(SQL.currentRowToJSON(rs));
+                }
+                if (b.length() == 0)
+                {
+                    b.append("Not found");
+                }
+                else
+                {
+                    b.append("\n]}");
+                }
+                rs.close();
+                return b.toString();
+
+            case "bugids":
+                String sql="select bug_id from bugs";
+                
+                if (condition!=null)
+                {
+                    sql+=" where "+condition;
+                }
+                
+                if (orderby!=null)
+                {
+                    sql+=" order by "+orderby;
+                }
+                rs = SQL.query(sql);
+                b = new StringBuilder();
+                while (rs.next())
+                {
+                    if (b.length() > 0)
+                    {
+                        b.append(",");
+                    }
+                    b.append(rs.getInt("bug_id"));
+                }
+                if (b.length() == 0)
+                {
+                    b.append("Not found");
                 }
                 rs.close();
                 return b.toString();

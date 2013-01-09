@@ -31,52 +31,25 @@ public class DataGenerator
             emails.add(email.trim());
         }
 
-        String[] severities = new String[]
-        {
-            "blocker",
-            "critical",
-            "major",
-            "minor",
-            "trivial"
-        };
-        String[] statuses = new String[]
-        {
-            "unconfirmed",
-            "new",
-            "assigned",
-            "reopened",
-            "ready",
-            "resolved",
-            "verified"
-        };
-        String[] priorities = new String[]
-        {
-            "P1",
-            "P2",
-            "P3",
-            "P4",
-            "P5"
-        };
-
         for (int i = 0; i != 1000; i++)
         {
             String assigned_to = emails.get(rgen.nextInt(emails.size()));
-            String severity = severities[rgen.nextInt(severities.length)];
-            String status = statuses[rgen.nextInt(statuses.length)];
+            int severity = rgen.nextInt(Bug.Severities.values().length);
+            int status = rgen.nextInt(Bug.Status.values().length);
             long creation_ts = System.currentTimeMillis() + rgen.nextInt(60 * 24 * 60 * 60 * 1000) - 30 * 24 * 60 * 60 * 1000;    // Within +- 30 days
             String title = Utils.capitalizeInitials(lr.getWords(3, rgen.nextInt(50)));
             String description = lr.getWords(150, rgen.nextInt(50));
-            String priority = priorities[rgen.nextInt(priorities.length)];
+            int priority = rgen.nextInt(Bug.Priorities.values().length);
             String reporter = emails.get(rgen.nextInt(emails.size()));
 
             String sql = "insert into bugs(assigned_to,severity,status,creation_ts,title,description,priority,reporter) values ("
                          + "'" + assigned_to + "',"
-                         + "'" + severity + "',"
-                         + "'" + status + "',"
+                         + "" + severity + ","
+                         + "" + status + ","
                          + "" + creation_ts + ","
                          + "'" + title + "',"
                          + "'" + description + "',"
-                         + "'" + priority + "',"
+                         + "" + priority + ","
                          + "'" + reporter + "')";
 
             SQL.queryNoRes(sql);
@@ -88,9 +61,14 @@ public class DataGenerator
     public static String todo(HttpServletRequest request) throws SQLException
     {
         String todo = request.getParameter("todo");
-        if (todo.equals("add1000bugs"))
+        if (todo!=null && todo.equals("add1000bugs"))
         {
             return add1000Bugs(request);
+        }
+
+        if (todo!=null && todo.equals("deleteall"))
+        {
+            SQL.queryNoRes("delete from bugs");
         }
 
         return null;
