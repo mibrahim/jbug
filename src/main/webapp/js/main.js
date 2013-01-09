@@ -5,6 +5,7 @@ var mainWindowHeight = 100;
 var bugList = "";
 var currentPage = 1;
 var winW = 630, winH = 460;
+var pageToDisplay="bugpage";
 
 function checkUser()
 {
@@ -59,7 +60,7 @@ function setMainContentHeight()
     }
     mainWindowHeight = winH - 10 - 60;
     $("#main").height(mainWindowHeight + "px");
-    showCurrentBugPage();
+    if (bugList.length>1) showCurrentPage();
 }
 
 function updateBugStatusBar()
@@ -83,20 +84,28 @@ function showOpenBugs()
         context: document.body
     }).done(function(data) {
         bugList = data;
-        showBugList();
+        currentPage=1;
+        showCurrentPage();
     });
-}
-
-function showBugList()
-{
-    currentPage = 1;
-    showCurrentBugPage();
 }
 
 function pageLink(page, isCurrent)
 {
-    html="<a href='javascript:currentPage="+page+";showCurrentBugPage();' class='"+((isCurrent===true)?"currentpg":"navpg")+"'>"+((page<10)?"&nbsp;":"")+page+"</a>";
+    html=" <a href='javascript:currentPage="+page+";showCurrentPage();' class='btn "+((isCurrent===true)?"btn-yellow":"btn-red")+"'>"+page+"</a>";
     return html;
+}
+
+function showCurrentPage()
+{
+    switch (pageToDisplay)
+    {
+        case "bugpage":
+            showCurrentBugPage();
+            break;
+        case "bugdetails":
+            showBugDetails();
+            break;
+    }
 }
 
 function showCurrentBugPage()
@@ -128,8 +137,6 @@ function showCurrentBugPage()
         for(a=regions[z][0];a<=regions[z][1];a++) navBar+=pageLink(a, currentPage===a);
     }
 
-//    for(i=0;i!==nPages;i++)
-//        navBar+=" "+(i+1);
     navBar += "</center><br/>";
 
     firstBug = (currentPage - 1) * pageSize;
@@ -156,7 +163,7 @@ function showCurrentBugPage()
     }
 
     bugs = JSON.parse(json).bugs;
-    table = "<table><tr class='titlerow'><td style='width:28px;'>#</td><td style='width:28px;'>Rep</td><td style='width:28px;'>As2</td><td>Sev</td><td>Pri</td><td>Summary</td></tr>";
+    table = "<table><tr class='titlerow'><td style='width:28px;'>#</td><td style='width:28px;'>@</td><td>Sev</td><td>Pri</td><td>Summary</td></tr>";
     for (i = 0; i !== bugs.length; i++)
         table += getBugSummaryRow(i + firstBug + 1, bugs[i], ((i % 2) === 0) ? "buglight" : "bugdark");
     table += "</table>";
@@ -186,11 +193,10 @@ function getBugSummaryRow(num, bug, color)
         color = "white";
     row = "<tr class='bugsummaryrow " + color + "'>" +
             "<td><b>" + num + "</b></td>" +
-            "<td>" + getUserGravatarImg(bug.REPORTER) + "</td>" +
             "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
             "<td>" + getSeverityName(bug.SEVERITY) + "</td>" +
             "<td>P" + (parseInt(bug.PRIORITY) + 1) + "</td>" +
-            "<td class='bugsummarydesctd' style='max-width:" + (winW - 200) + "px'><b>" + bug.TITLE + "</b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
+            "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b>" + bug.TITLE + "</b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
 
     row += "</tr>";
     return row;
