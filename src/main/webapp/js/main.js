@@ -3,9 +3,23 @@ var jBugUser = "";
 var jBugUserMD5 = "";
 var mainWindowHeight = 100;
 var bugList = "";
-var currentPage = 1;
+var currentPage;
 var winW = 630, winH = 460;
-var pageToDisplay="bugpage";
+var pageToDisplay;
+var params;
+
+function extractURLVariables()
+{
+    var loc = "" + window.location;
+    str = loc.split('#');
+    var prmarr = str[1].split("&");
+    params = {};
+
+    for (var i = 0; i < prmarr.length; i++) {
+        var tmparr = prmarr[i].split("=");
+        params[tmparr[0]] = tmparr[1];
+    }
+}
 
 function checkUser()
 {
@@ -84,21 +98,22 @@ function showOpenBugs()
         context: document.body
     }).done(function(data) {
         bugList = data;
-        currentPage=1;
         showCurrentPage();
     });
 }
 
 function pageLink(page, isCurrent)
 {
-    html=" <a href='javascript:currentPage="+page+";showCurrentPage();' class='btn "+((isCurrent===true)?"btn-yellow":"btn-red")+"'>"+page+"</a>";
+    html=" <a href='#do=bugpage&page="+page+"' onclick='currentPage="+page+";showCurrentPage();' class='btn "+((isCurrent===true)?"btn-yellow":"btn-red")+"'>"+page+"</a>";
     return html;
 }
 
 function showCurrentPage()
 {
+    if (pageToDisplay===undefined) pageToDisplay="";
     switch (pageToDisplay)
     {
+        case "":
         case "bugpage":
             showCurrentBugPage();
             break;
@@ -201,3 +216,15 @@ function getBugSummaryRow(num, bug, color)
     row += "</tr>";
     return row;
 }
+
+extractURLVariables();
+
+if (params !== undefined)
+{
+    if (params['do'] !== undefined)
+        pageToDisplay = params['do'];
+    if (params['page'] !== undefined)
+        currentPage = parseInt(params['page']);
+}
+
+if (currentPage===undefined) currentPage=1;
