@@ -1,18 +1,16 @@
 // Global Variables
 var jBugUser = "";
-var jBugUserMD5 = "";
 var mainWindowHeight = 100;
 var bugList = "";
 var currentPage;
 var winW = 630, winH = 460;
 var pageToDisplay;
 var params;
+var bugId;
 
 function extractURLVariables()
 {
-    var loc = "" + window.location;
-    str = loc.split('#');
-    var prmarr = str[1].split("&");
+    var prmarr = document.location.hash.substr(1).split("&");
     params = {};
 
     for (var i = 0; i < prmarr.length; i++) {
@@ -29,7 +27,6 @@ function checkUser()
     {
         getUserEmail();
     } else {
-        jBugUserMD5 = $.md5(jBugUser);
         updateUserGravatar();
     }
 }
@@ -39,14 +36,13 @@ function getUserEmail()
     if (jBugUser === null)
         jBugUser = "";
     jBugUser = prompt("What's your email?", window.jBugUser);
-    jBugUserMD5 = $.md5(jBugUser);
     $.cookie("jbug.useremail", jBugUser);
     updateUserGravatar();
 }
 
 function updateUserGravatar()
 {
-    $("#grv").html("<img align='top' src='http://www.gravatar.com/avatar/" + jBugUserMD5 + "?s=28'/>");
+    $("#grv").html(getUserGravatarImg(jBugUser, 28));
 }
 
 function getUserGravatarImg(email, size)
@@ -104,13 +100,34 @@ function showOpenBugs()
 
 function pageLink(page, isCurrent)
 {
-    html=" <a href='#do=bugpage&page="+page+"' onclick='currentPage="+page+";showCurrentPage();' class='btn "+((isCurrent===true)?"btn-yellow":"btn-red")+"'>"+page+"</a>";
+    html=" <a href='#do=bugpage&page="+page+"' onclick='updatePage();' class='btn "+((isCurrent===true)?"btn-yellow":"btn-red")+"'>"+page+"</a>";
     return html;
+}
+
+function updatePage()
+{
+    setTimeout(function() { showCurrentPage(); }, 1);
 }
 
 function showCurrentPage()
 {
-    if (pageToDisplay===undefined) pageToDisplay="";
+    extractURLVariables();
+    
+    if (params !== undefined)
+    {
+        if (params['do'] !== undefined)
+            pageToDisplay = params['do'];
+        if (params['page'] !== undefined)
+            currentPage = parseInt(params['page']);
+        if (params['bugid'] !== undefined)
+            bugId = parseInt(params['bugid']);
+    }
+
+    if (currentPage === undefined)
+        currentPage = 1;
+    if (pageToDisplay === undefined)
+        pageToDisplay = "";
+
     switch (pageToDisplay)
     {
         case "":
@@ -129,8 +146,10 @@ function showCurrentBugPage()
         return;
 
     bugs = bugList.split(",");
-    pageSize = Math.floor((mainWindowHeight - 70) / 33);
+    pageSize = Math.floor((mainWindowHeight - 90) / 33);
     nPages = Math.ceil(bugs.length / pageSize);
+    
+    if (currentPage>nPages) currentPage=nPages;
 
     navBar = "<br/><center> ";
     start=0;
@@ -211,20 +230,23 @@ function getBugSummaryRow(num, bug, color)
             "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
             "<td>" + getSeverityName(bug.SEVERITY) + "</td>" +
             "<td>P" + (parseInt(bug.PRIORITY) + 1) + "</td>" +
-            "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b>" + bug.TITLE + "</b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
+            "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID +"' onclick='updatePage()'>"+bug.TITLE + "</a></b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
 
     row += "</tr>";
     return row;
 }
 
-extractURLVariables();
-
-if (params !== undefined)
+function showBugDetails()
 {
-    if (params['do'] !== undefined)
-        pageToDisplay = params['do'];
-    if (params['page'] !== undefined)
-        currentPage = parseInt(params['page']);
-}
+     $.ajax({
+        url: "/data.jsp?get=bug&for="+bugId,
+        async:false,
+        context: document.body
+    }).done(function(data) {
+        bug = JSON.parse(data);
+    });
 
-if (currentPage===undefined) currentPage=1;
+    html="<table><tr><td>"+getUserGravatarImg(bug.ASSIGNED_TO,64)+"</td><td><h1>"+bug.TITLE+"</h1></td></tr></table><br/>";
+    html+="<span class='bugdescription'>"+bug.DESCRIPTION+"</span>";
+    $("#main").html(html);
+}

@@ -4,9 +4,7 @@
  */
 package com.qahit.jbug;
 
-import java.sql.Clob;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashSet;
 import javax.servlet.http.HttpServletRequest;

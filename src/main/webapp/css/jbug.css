@@ -116,3 +116,8 @@ body{
     background: #ea4;
     color: #fff;
 }
+
+.bugdescription{
+    font-family: Droid Sans Mono;
+    font-size: 1em;
+}
