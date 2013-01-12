@@ -5,7 +5,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JBug</title>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
         <script src="/js/jquery.cookie.js"></script>
         <script src="/js/jquery.md5.js"></script>
         <script src="/js/main.js"></script>
@@ -17,12 +19,12 @@
     <body onresize="setMainContentHeight();">
         <div id="full">
             <jsp:include page="header.jsp"></jsp:include>
-            <div id="main" class="main">Hello</div>
+            <div id="main" class="main"></div>
             <script type="text/javascript">
-                checkUser();
-                setMainContentHeight();
-                updateBugStatusBar();
-                showOpenBugs();
+		checkUser();
+		setMainContentHeight();
+		updateBugStatusBar();
+		showOpenBugs();
             </script>
         </div>
     </body>

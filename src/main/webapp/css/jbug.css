@@ -121,3 +121,18 @@ body{
     font-family: Droid Sans Mono;
     font-size: 1em;
 }
+
+.bugseverity{
+    color: #a60;
+    font-size: 1em;
+}
+
+.usergravatar{
+    border: 2px #888 solid;
+    border-radius: 3px;
+}
+
+.navdot{
+    color: #ea4;
+    -webkit-text-stroke: #852 1px;
+}
