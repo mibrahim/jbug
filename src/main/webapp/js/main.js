@@ -231,10 +231,12 @@ function getSeverityName(severity)
         case "1":
             return "Critical";
         case "2":
-            return "Major";
+            return "Feature";
         case "3":
-            return "Minor";
+            return "Major";
         case "4":
+            return "Minor";
+        case "5":
             return "Trivial";
     }
 }
@@ -336,9 +338,10 @@ function bugEdit()
     html += "<tr><td class='fieldname'>Severity:</td><td>\n\
     <input type='radio' name='severity' value='0'>Blocker\n\
     <input type='radio' name='severity' value='1'>Critical\n\
-    <input type='radio' name='severity' value='2'>Major\n\
-    <input type='radio' name='severity' value='3'>Minor\n\
-    <input type='radio' name='severity' value='4'>Trivial\n\
+    <input type='radio' name='severity' value='2'>Feature\n\
+    <input type='radio' name='severity' value='3'>Major\n\
+    <input type='radio' name='severity' value='4'>Minor\n\
+    <input type='radio' name='severity' value='5'>Trivial\n\
     </td></tr>";
     html += "<tr><td class='fieldname'>Priority:</td><td>\n\
     <input type='radio' name='priority' value='0'>P1\n\
@@ -346,6 +349,16 @@ function bugEdit()
     <input type='radio' name='priority' value='2'>P3\n\
     <input type='radio' name='priority' value='3'>P4\n\
     <input type='radio' name='priority' value='4'>P5\n\
+    </td></tr>";
+    html += "<tr><td class='fieldname'>Status:</td><td>\n\
+    <input type='radio' name='status' value='0'>Unconfirmed\n\
+    <input type='radio' name='status' value='1'>New\n\
+    <input type='radio' name='status' value='2'>Assigned\n\
+    <input type='radio' name='status' value='3'>Reopened\n\
+    <input type='radio' name='status' value='4'>Ready\n\
+    <input type='radio' name='status' value='5'>In progress\n\
+    <input type='radio' name='status' value='6'>Resolved\n\
+    <input type='radio' name='status' value='7'>Verified\n\
     </td></tr>";
     html += "<tr><td class='fieldname'>Product:</td><td>\n\
     <input type='text' class='txtfield' id='product' name='product' id='product' value='" + bug.PRODUCT + "'>\n\
@@ -365,6 +378,12 @@ function bugEdit()
     html += "</table>";
 
     $("#main").html(html);
+    
+    // If the bug is new, set status to assigned and set the input to read only
+    if (bugId === 'new')
+    {
+	$('input:radio[name="status",value="2"]').attr('checked', 'checked');
+    }
 
     // Autocomplete the reporters and the assigned_to
     $.ajax({
@@ -383,6 +402,58 @@ function bugEdit()
             source: ausers
         });
     });
+
+    // Autocomplete the products
+    $.ajax({
+        url: "/data.jsp?get=products",
+        async: true,
+        context: document.body
+    }).done(function(data) {
+        if (data.length() > 0)
+        eval("var aproducts=[" + data + "];");
+        $("#product").autocomplete({
+            source: aproducts
+        });
+    });
+
+    // Autocomplete the component
+    $.ajax({
+        url: "/data.jsp?get=components",
+        async: true,
+        context: document.body
+    }).done(function(data) {
+        if (data.length() > 0)
+        eval("var acomponents=[" + data + "];");
+        $("#component").autocomplete({
+            source: acomponents
+        });
+    });
+
+    // Autocomplete the versions
+    $.ajax({
+        url: "/data.jsp?get=versions",
+        async: true,
+        context: document.body
+    }).done(function(data) {
+        if (data.length() > 0)
+        eval("var aversions=[" + data + "];");
+        $("#version").autocomplete({
+            source: aversions
+        });
+    });
+
+    // Autocomplete the target_milestone
+    $.ajax({
+        url: "/data.jsp?get=target_milestone",
+        async: true,
+        context: document.body
+    }).done(function(data) {
+        if (data.length() > 0)
+        eval("var atarget_milestone=[" + data + "];");
+        $("#target_milestone").autocomplete({
+            source: atarget_milestone
+        });
+    });
 }
 
 function getField(fieldname)
@@ -397,8 +468,14 @@ function saveBug()
     url+="&"+getField("description");
     url+="&"+getField("reporter");
     url+="&"+getField("assigned_to");
-    url+="&severity="+$('input:radio[name=severity]:checked').val();
-    url+="&priority="+$('input:radio[name=priority]:checked').val();
+    severity="0";
+    if($('input:radio[name=severity]:checked').val()!==undefined)
+        severity=$('input:radio[name=severity]:checked').val();
+    url+="&severity="+severity;
+    priority="0";
+    if($('input:radio[name=priority]:checked').val()!==undefined)
+        priority=$('input:radio[name=priority]:checked').val();
+    url+="&priority="+priority;
     url+="&"+getField("product");
     url+="&"+getField("component");
     url+="&"+getField("version");

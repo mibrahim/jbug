@@ -102,19 +102,19 @@ public final class SQL
                 + "assigned_to VARCHAR(64) NOT NULL," // email of the assignee
                 + "severity INTEGER NOT NULL,"
                 + "status INTEGER NOT NULL,"
-                + "resolution INTEGER,"
+//                + "resolution INTEGER,"
                 + "creation_ts BIGINT NOT NULL,"
                 + "title VARCHAR(256) NOT NULL,"
                 + "description LONG VARCHAR NOT NULL,"
                 + "comments_json CLOB,"
                 + "priority INTEGER NOT NULL,"
                 + "product VARCHAR(64),"
-                + "rep_platform VARCHAR(64),"
+//                + "rep_platform VARCHAR(64),"
                 + "reporter VARCHAR(64) NOT NULL,"
                 + "version VARCHAR(64),"
                 + "component VARCHAR(64),"
                 + "target_milestone VARCHAR(64),"
-                + "estimated_load VARCHAR(8),"
+                + "estimated_load INTEGER,"
                 + "CONSTRAINT primary_key PRIMARY KEY (bug_id)"
                 + ")");
 
@@ -125,13 +125,13 @@ public final class SQL
         SQL.queryNoRes("create index i04 on bugs(creation_ts)");
         SQL.queryNoRes("create index i05 on bugs(priority)");
         SQL.queryNoRes("create index i06 on bugs(product)");
-        SQL.queryNoRes("create index i07 on bugs(rep_platform)");
+//        SQL.queryNoRes("create index i07 on bugs(rep_platform)");
         SQL.queryNoRes("create index i08 on bugs(reporter)");
         SQL.queryNoRes("create index i09 on bugs(version)");
         SQL.queryNoRes("create index i10 on bugs(component)");
         SQL.queryNoRes("create index i12 on bugs(target_milestone)");
         SQL.queryNoRes("create index i13 on bugs(estimated_load)");
-        SQL.queryNoRes("create index i14 on bugs(resolution)");
+//        SQL.queryNoRes("create index i14 on bugs(resolution)");
 
         SQL.setStringVar("dbversion", "1");
         

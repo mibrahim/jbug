@@ -23,6 +23,13 @@ public class Bug
         VERIFIED,
     }
     
+    public enum EstimatedLoad
+    {
+	EASY,
+	MEDIUM,
+	HARD
+    }
+    
     public enum Resolution
     {
         FIXED,
@@ -44,6 +51,7 @@ public class Bug
     {
         BLOCKER,
         CRITICAL,
+	FEATURE,
         MAJOR,
         MINOR,
         TRIVIAL

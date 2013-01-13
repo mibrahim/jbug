@@ -4,6 +4,7 @@
  */
 package com.qahit.jbug;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -258,20 +259,82 @@ public class Main
 	return b.toString();
     }
 
+    static String createNewBug(HttpServletRequest request) throws SQLException
+    {
+	// Status is Assigned
+	PreparedStatement stmt= SQL.dbConnection.prepareStatement("insert into bugs"
+		+ "(title , description , reporter , assigned_to , severity , "
+		+ "priority , product , component , version , target_milestone, "
+		+ "creation_ts, status) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+	
+	stmt.setString(1, request.getParameter("title"));
+	stmt.setString(2, request.getParameter("description"));
+	stmt.setString(3, request.getParameter("reporter").trim());
+	stmt.setString(4, request.getParameter("assigned_to").trim());
+	stmt.setInt(5,Integer.parseInt(request.getParameter("severity")));
+	stmt.setInt(6,Integer.parseInt(request.getParameter("priority")));
+	stmt.setString(7, request.getParameter("product").toLowerCase().trim());
+	stmt.setString(8, request.getParameter("component").toLowerCase().trim());
+	stmt.setString(9, request.getParameter("version").toLowerCase().trim());
+	stmt.setString(10, request.getParameter("target_milestone").toLowerCase().trim());
+	stmt.setLong(11,System.currentTimeMillis());
+	stmt.setInt(12, Bug.Status.ASSIGNED.ordinal());
+	
+	stmt.execute();
+	
+	// Find the new bug id
+	ResultSet rs=SQL.query("select max(bug_id) as max from bugs");
+	rs.next();
+	int newBugId=rs.getInt("max");
+	rs.close();
+	
+	SQL.dbConnection.commit();
+	
+	return ""+newBugId;
+    }
+    
     static String updateBug(HttpServletRequest request) throws SQLException
     {
-	StringBuilder sql=new StringBuilder();
+	// Status is Assigned
+	PreparedStatement stmt= SQL.dbConnection.prepareStatement("update bugs "
+		+ "set title=? , description=? , reporter=? , assigned_to=? , severity=? , "
+		+ "priority=? , product=? , component=? , version=? , target_milestone=?, "
+		+ "status=? where bug_id=?");
 	
+	stmt.setString(1, request.getParameter("title"));
+	stmt.setString(2, request.getParameter("description"));
+	stmt.setString(3, request.getParameter("reporter").trim());
+	stmt.setString(4, request.getParameter("assigned_to").trim());
+	stmt.setInt(5,Integer.parseInt(request.getParameter("severity")));
+	stmt.setInt(6,Integer.parseInt(request.getParameter("priority")));
+	stmt.setString(7, request.getParameter("product").toLowerCase().trim());
+	stmt.setString(8, request.getParameter("component").toLowerCase().trim());
+	stmt.setString(9, request.getParameter("version").toLowerCase().trim());
+	stmt.setString(10, request.getParameter("target_milestone").toLowerCase().trim());
+	stmt.setInt(11, Integer.parseInt(request.getParameter("status")));
+	stmt.setInt(12, Integer.parseInt(request.getParameter("bugid")));
+	
+	stmt.execute();
+	
+	return request.getParameter("bugid");
+    }
+    
+    /**
+     * Updates or creates a new bug
+     * @param request
+     * @return
+     * @throws SQLException 
+     */
+    static String updateOrCreateBug(HttpServletRequest request) throws SQLException
+    {
 	String bugid=request.getParameter("bugid");
-	boolean updating=true;
 	if (bugid.equalsIgnoreCase("new"))
 	{
-	    updating=false;
+	    return createNewBug(request);
 	}
-	
-	if (updating)
+	else
 	{
-	    sql.append("update bugs set ")
+	    return updateBug(request);
 	}
     }
     
@@ -310,7 +373,7 @@ public class Main
 
 	    // Sets and updates
 	    case "updatebug":
-		return updateBug(request);
+		return updateOrCreateBug(request);
 	    default:
 		return "Unkown request: " + pget;
 	}
