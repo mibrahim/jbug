@@ -12,8 +12,8 @@ var bugId;
 var oldLocation = location.href;
 setInterval(function() {
     if (location.href !== oldLocation) {
-	oldLocation = location.href;
-	showCurrentPage();
+        oldLocation = location.href;
+        showCurrentPage();
     }
 }, 100); // check every second
 
@@ -23,8 +23,8 @@ function extractURLVariables()
     params = {};
 
     for (var i = 0; i < prmarr.length; i++) {
-	var tmparr = prmarr[i].split("=");
-	params[tmparr[0]] = tmparr[1];
+        var tmparr = prmarr[i].split("=");
+        params[tmparr[0]] = tmparr[1];
     }
 }
 
@@ -34,16 +34,16 @@ function checkUser()
 
     if (jBugUser === null)
     {
-	getUserEmail();
+        getUserEmail();
     } else {
-	updateUserGravatar();
+        updateUserGravatar();
     }
 }
 
 function getUserEmail()
 {
     if (jBugUser === null)
-	jBugUser = "";
+        jBugUser = "";
     jBugUser = prompt("What's your email?", window.jBugUser);
     $.cookie("jbug.useremail", jBugUser);
     updateUserGravatar();
@@ -57,39 +57,39 @@ function updateUserGravatar()
 function getUserGravatarImg(email, size)
 {
     if (size === null || size === undefined)
-	size = 28;
+        size = 28;
     return "<img class='usergravatar' align='top' style='width:" + size + "px;height:" + size + "px;' src='http://www.gravatar.com/avatar/" + $.md5(email) + "?d=wavatar&s=" + size + "'/>";
 }
 
 function setMainContentHeight()
 {
     if (document.body && document.body.offsetWidth) {
-	winW = document.body.offsetWidth;
-	winH = document.body.offsetHeight;
+        winW = document.body.offsetWidth;
+        winH = document.body.offsetHeight;
     }
     if (document.compatMode === 'CSS1Compat' &&
-	    document.documentElement &&
-	    document.documentElement.offsetWidth) {
-	winW = document.documentElement.offsetWidth;
-	winH = document.documentElement.offsetHeight;
+            document.documentElement &&
+            document.documentElement.offsetWidth) {
+        winW = document.documentElement.offsetWidth;
+        winH = document.documentElement.offsetHeight;
     }
     if (window.innerWidth && window.innerHeight) {
-	winW = window.innerWidth;
-	winH = window.innerHeight;
+        winW = window.innerWidth;
+        winH = window.innerHeight;
     }
     mainWindowHeight = winH - 10 - 60;
     $("#main").height(mainWindowHeight + "px");
     if (bugList.length > 1)
-	showCurrentPage();
+        showCurrentPage();
 }
 
 function updateBugStatusBar()
 {
     $.ajax({
-	url: "/data.jsp?get=openbugcount",
-	context: document.body
+        url: "/data.jsp?get=openbugcount",
+        context: document.body
     }).done(function(data) {
-	$("#openbugs").html(data);
+        $("#openbugs").html(data);
     });
 }
 
@@ -98,11 +98,11 @@ var buglist = "";
 function showOpenBugs()
 {
     $.ajax({
-	url: "/data.jsp?get=openbugids",
-	context: document.body
+        url: "/data.jsp?get=openbugids",
+        context: document.body
     }).done(function(data) {
-	bugList = data;
-	showCurrentPage();
+        bugList = data;
+        showCurrentPage();
     });
 }
 
@@ -118,51 +118,51 @@ function showCurrentPage()
 
     if (params !== undefined)
     {
-	if (params['do'] !== undefined)
-	    pageToDisplay = params['do'];
-	else
-	    pageToDisplay = undefined;
-	if (params['page'] !== undefined)
-	    currentPage = parseInt(params['page']);
-	else
-	    currentPage = undefined;
-	if (params['bugid'] !== undefined)
-	    bugId = (params['bugid']!=="new")?parseInt(params['bugid']):"new";
-	else
-	    bugId = undefined;
+        if (params['do'] !== undefined)
+            pageToDisplay = params['do'];
+        else
+            pageToDisplay = undefined;
+        if (params['page'] !== undefined)
+            currentPage = parseInt(params['page']);
+        else
+            currentPage = undefined;
+        if (params['bugid'] !== undefined)
+            bugId = (params['bugid'] !== "new") ? parseInt(params['bugid']) : "new";
+        else
+            bugId = undefined;
     }
 
     if (currentPage === undefined)
-	currentPage = 1;
+        currentPage = 1;
     if (pageToDisplay === undefined)
-	pageToDisplay = "";
+        pageToDisplay = "";
 
     switch (pageToDisplay)
     {
-	case "":
-	case "bugpage":
-	    showCurrentBugPage();
-	    break;
-	case "bugdetails":
-	    showBugDetails();
-	    break;
-	case "bugedit":
-	    bugEdit();
-	    break;
+        case "":
+        case "bugpage":
+            showCurrentBugPage();
+            break;
+        case "bugdetails":
+            showBugDetails();
+            break;
+        case "bugedit":
+            bugEdit();
+            break;
     }
 }
 
 function showCurrentBugPage()
 {
     if (bugList === undefined || bugList.length === 0 || bugList === "Not found")
-	return;
+        return;
 
     bugs = bugList.split(",");
     pageSize = Math.floor((mainWindowHeight - 90) / 33);
     nPages = Math.ceil(bugs.length / pageSize);
 
     if (currentPage > nPages)
-	currentPage = nPages;
+        currentPage = nPages;
 
     navBar = "<br/><center> ";
     navBar += pageLink(1, "<i class='icon-fast-backward'></i>", false);
@@ -171,21 +171,21 @@ function showCurrentBugPage()
 
     for (z = 0; z < regions.length - 1; z++)
     {
-	if (regions[z][1] > regions[z + 1][0]) {
-	    regions[z][1] = regions[z + 1][1];
-	    for (k = z + 1; k < regions.length - 1; k++)
-		regions[k] = regions[k + 1];
-	    regions.splice(regions.length - 1, 1);
-	    z--;
-	}
+        if (regions[z][1] > regions[z + 1][0]) {
+            regions[z][1] = regions[z + 1][1];
+            for (k = z + 1; k < regions.length - 1; k++)
+                regions[k] = regions[k + 1];
+            regions.splice(regions.length - 1, 1);
+            z--;
+        }
     }
 
     for (z = 0; z < regions.length; z++)
     {
-	if (z !== 0)
-	    navBar += "&nbsp;&nbsp;&nbsp;<i class='icon-circle navdot'></i> <i class='icon-circle navdot'></i> <i class='icon-circle navdot'></i>&nbsp;&nbsp;&nbsp;";
-	for (a = regions[z][0]; a <= regions[z][1]; a++)
-	    navBar += pageLink(a, a, currentPage === a);
+        if (z !== 0)
+            navBar += "&nbsp;&nbsp;&nbsp;<i class='icon-circle navdot'></i> <i class='icon-circle navdot'></i> <i class='icon-circle navdot'></i>&nbsp;&nbsp;&nbsp;";
+        for (a = regions[z][0]; a <= regions[z][1]; a++)
+            navBar += pageLink(a, a, currentPage === a);
     }
 
     navBar += pageLink(nPages, "<i class='icon-fast-forward'></i>", false);
@@ -196,28 +196,28 @@ function showCurrentBugPage()
     // Make a bug list
     ids = "";
     for (i = firstBug; i < bugs.length && i < firstBug + pageSize; i++) {
-	if (ids.length > 0)
-	    ids += ",";
-	ids += bugs[i];
+        if (ids.length > 0)
+            ids += ",";
+        ids += bugs[i];
     }
 
     $.ajax({
-	url: "/data.jsp?get=bugssummaries&for=" + ids,
-	async: false,
-	context: document.body
+        url: "/data.jsp?get=bugssummaries&for=" + ids,
+        async: false,
+        context: document.body
     }).done(function(data) {
-	json = data;
+        json = data;
     });
 
     if (json === "Not found")
     {
-	$("#main").html("No bugs found");
+        $("#main").html("No bugs found");
     }
 
     bugs = JSON.parse(json).bugs;
     table = "<table><tr class='titlerow'><td style='width:28px;'>#</td><td style='width:28px;'>@</td><td>Sev</td><td>Pri</td><td>Summary</td></tr>";
     for (i = 0; i !== bugs.length; i++)
-	table += getBugSummaryRow(i + firstBug + 1, bugs[i], ((i % 2) === 0) ? "buglight" : "bugdark");
+        table += getBugSummaryRow(i + firstBug + 1, bugs[i], ((i % 2) === 0) ? "buglight" : "bugdark");
     table += "</table>";
     $("#main").html(navBar + table);
 }
@@ -226,29 +226,29 @@ function getSeverityName(severity)
 {
     switch (severity)
     {
-	case "0":
-	    return "Blocker";
-	case "1":
-	    return "Critical";
-	case "2":
-	    return "Major";
-	case "3":
-	    return "Minor";
-	case "4":
-	    return "Trivial";
+        case "0":
+            return "Blocker";
+        case "1":
+            return "Critical";
+        case "2":
+            return "Major";
+        case "3":
+            return "Minor";
+        case "4":
+            return "Trivial";
     }
 }
 
 function getBugSummaryRow(num, bug, color)
 {
     if (color === undefined)
-	color = "white";
+        color = "white";
     row = "<tr class='bugsummaryrow " + color + "'>" +
-	    "<td><b>" + num + "</b></td>" +
-	    "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
-	    "<td>" + getSeverityName(bug.SEVERITY) + "</td>" +
-	    "<td>P" + (parseInt(bug.PRIORITY) + 1) + "</td>" +
-	    "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>" + bug.TITLE + "</a></b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
+            "<td><b>" + num + "</b></td>" +
+            "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
+            "<td>" + getSeverityName(bug.SEVERITY) + "</td>" +
+            "<td>P" + (parseInt(bug.PRIORITY) + 1) + "</td>" +
+            "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>" + bug.TITLE + "</a></b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
 
     row += "</tr>";
     return row;
@@ -257,11 +257,11 @@ function getBugSummaryRow(num, bug, color)
 function showBugDetails()
 {
     $.ajax({
-	url: "/data.jsp?get=bug&for=" + bugId,
-	async: false,
-	context: document.body
+        url: "/data.jsp?get=bug&for=" + bugId,
+        async: false,
+        context: document.body
     }).done(function(data) {
-	bug = JSON.parse(data);
+        bug = JSON.parse(data);
     });
 
     html = "<table>";
@@ -271,73 +271,137 @@ function showBugDetails()
     html += "<b>P" + (parseInt(bug.PRIORITY) + 1) + "</b> ";
     switch (bug.SEVERITY)
     {
-	case "0":
-	    html += "<i class='icon-remove-sign' title='blocker'>";
-	    break;
-	case "1":
-	    html += "<i class='icon-warning-sign' title='critical'>";
-	    break;
-	case "2":
-	    html += "<i class='icon-circle' title='major'>";
-	    break;
-	case "3":
-	    html += "<i class='icon-circle' title='minor'>";
-	    break;
-	case "4":
-	    html += "<i class='icon-circle' title='trivial'>";
-	    break;
+        case "0":
+            html += "<i class='icon-remove-sign' title='blocker'>";
+            break;
+        case "1":
+            html += "<i class='icon-warning-sign' title='critical'>";
+            break;
+        case "2":
+            html += "<i class='icon-circle' title='major'>";
+            break;
+        case "3":
+            html += "<i class='icon-circle' title='minor'>";
+            break;
+        case "4":
+            html += "<i class='icon-circle' title='trivial'>";
+            break;
     }
     html += "</i></span></td></tr></table><br/>";
     html += "<span class='bugdescription'>" + bug.DESCRIPTION + "</span>";
     $("#main").html(html);
 }
 
+function validateBugFields()
+{
+
+}
+
 function bugEdit()
 {
     if (bugId !== "new")
     {
-	$.ajax({
-	    url: "/data.jsp?get=bug&for=" + bugId,
-	    async: false,
-	    context: document.body
-	}).done(function(data) {
-	    bug = JSON.parse(data);
-	});
+        $.ajax({
+            url: "/data.jsp?get=bug&for=" + bugId,
+            async: false,
+            context: document.body
+        }).done(function(data) {
+            bug = JSON.parse(data);
+        });
     }
     else
     {
-	bug = "";
-	bugId = "new";
-	bug.BUGID = "new";
-	bug.REPORTER = jBugUser;
-	bug.TITLE =
-		bug.ASSIGNED_TO =
-		bug.DESCRIPTION = "";
+        bug = new Object();
+        bugId = "new";
+        bug.BUGID = "new";
+        bug.REPORTER = jBugUser;
+        bug.TITLE = "";
+        bug.ASSIGNED_TO = "";
+        bug.DESCRIPTION = "";
+        bug.PRODUCT = "";
+        bug.COMPONENT = "";
+        bug.VERSION = "";
+        bug.SEVERITY = "";
+        bug.PRIORITY = "";
+        bug.TARGET_MILESTONE = "";
 
     }
 
     html = "<table>";
-    html += "<tr><td class='fieldname'>Bug ID:</td><td id='bugid'>" + bugId + "</td></tr>";
-    html += "<tr><td class='fieldname'>Title:</td><td><input type='text' class='txtfield' name='title' value='" + bug.TITLE + "'/></td></tr>";
-    html += "<tr><td class='fieldname'>Description:</td><td id='bugid'>" + bugId + "</td></tr>";
+    html += "<tr><td class='fieldname'>Bug ID:</td><td><input type='text' class='txtfield' id='bugid' value='" + bugId + "' readonly/></td></tr>";
+    html += "<tr><td class='fieldname'>Title:</td><td><input type='text' class='txtfield' name='title' id='title' value='" + bug.TITLE + "'/></td></tr>";
+    html += "<tr><td class='fieldname' valign='top'>Description:</td><td><textarea rows='5' class='txtarea' name='description' id='description'>" + bug.DESCRIPTION + "</textarea></td></tr>";
     html += "<tr><td class='fieldname'>Reporter:</td><td><input type='text' class='txtfield' name='reporter' id='reporter' value='" + bug.REPORTER + "'/></td></tr>";
-    html += "<tr><td class='fieldname'>Reporter:</td><td><input type='text' class='txtfield' name='assigned_to' id='assigned_to' value='" + bug.ASSIGNED_TO + "'/></td></tr>";
+    html += "<tr><td class='fieldname'>Assigned to:</td><td><input type='text' class='txtfield' name='assigned_to' id='assigned_to' value='" + bug.ASSIGNED_TO + "'/></td></tr>";
+    html += "<tr><td class='fieldname'>Severity:</td><td>\n\
+    <input type='radio' name='severity' value='0'>Blocker\n\
+    <input type='radio' name='severity' value='1'>Critical\n\
+    <input type='radio' name='severity' value='2'>Major\n\
+    <input type='radio' name='severity' value='3'>Minor\n\
+    <input type='radio' name='severity' value='4'>Trivial\n\
+    </td></tr>";
+    html += "<tr><td class='fieldname'>Priority:</td><td>\n\
+    <input type='radio' name='priority' value='0'>P1\n\
+    <input type='radio' name='priority' value='1'>P2\n\
+    <input type='radio' name='priority' value='2'>P3\n\
+    <input type='radio' name='priority' value='3'>P4\n\
+    <input type='radio' name='priority' value='4'>P5\n\
+    </td></tr>";
+    html += "<tr><td class='fieldname'>Product:</td><td>\n\
+    <input type='text' class='txtfield' id='product' name='product' id='product' value='" + bug.PRODUCT + "'>\n\
+    </td></tr>";
+    html += "<tr><td class='fieldname'>Component:</td><td>\n\
+    <input type='text' class='txtfield' id='component' name='component' id='component' value='" + bug.COMPONENT + "'>\n\
+    </td></tr>";
+    html += "<tr><td class='fieldname'>Version:</td><td>\n\
+    <input type='text' class='txtfield' id='version' name='version' id='version' value='" + bug.VERSION + "'>\n\
+    </td></tr>";
+    html += "<tr><td class='fieldname'>Target milestone:</td><td>\n\
+    <input type='text' class='txtfield' id='target_milestone' name='target_milestone' id='target_milestone' value='" + bug.TARGET_MILESTONE + "'>\n\
+    </td></tr>";
+
+    html += "<tr><td class='fieldname' colspan='2'><center><a href='javascript:saveBug()' class='btn btn-blue'>Save</a></center></td></tr>";
+
     html += "</table>";
 
     $("#main").html(html);
 
     // Autocomplete the reporters and the assigned_to
     $.ajax({
-	url: "/data.jsp?get=users",
-	async: true,
-	context: document.body
+        url: "/data.jsp?get=users",
+        async: true,
+        context: document.body
     }).done(function(data) {
-	eval("var ausers=[" + data + "];");
-	$("#reporter").autocomplete({
-	    source: ausers
-	});
-	$("#assigned_to").autocomplete({
-	    source: ausers
-	});
+        if (data.length() > 0)
+            data += ",";
+        data += jBugUser;
+        eval("var ausers=[" + data + "];");
+        $("#reporter").autocomplete({
+            source: ausers
+        });
+        $("#assigned_to").autocomplete({
+            source: ausers
+        });
     });
+}
+
+function getField(fieldname)
+{
+    return fieldname+"="+encodeURI($("#"+fieldname).val());    
+}
+function saveBug()
+{
+    url="/data.jsp?get=updatebug?";
+    url+=getField("bugid");
+    url+="&"+getField("title");
+    url+="&"+getField("description");
+    url+="&"+getField("reporter");
+    url+="&"+getField("assigned_to");
+    url+="&severity="+$('input:radio[name=severity]:checked').val();
+    url+="&priority="+$('input:radio[name=priority]:checked').val();
+    url+="&"+getField("product");
+    url+="&"+getField("component");
+    url+="&"+getField("version");
+    url+="&"+getField("target_milestone");
+    alert(url);
 }

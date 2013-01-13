@@ -4,8 +4,6 @@
  */
 package com.qahit.jbug;
 
-import com.sun.corba.se.spi.resolver.ResolverDefault;
-
 /**
  *
  * @author mosama

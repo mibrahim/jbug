@@ -192,3 +192,8 @@
     text-align: right;
     font-weight: bold;
 }
+
+.red{
+    border: 1px #008800 solid;
+    box-shadow: #080800 0px 0px 5px;
+}
