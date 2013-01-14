@@ -12,48 +12,23 @@ public class Bug
 {
     public enum Status
     {
-        UNCONFIRMED,
-        NEW,
-        ASSIGNED,
-        REOPENED,
-        READY,
+        OPEN,
         IN_PROGRESS,
         PAUSED,
-        RESOLVED,
-        VERIFIED,
+        CLOSED
     }
     
-    public enum EstimatedLoad
+    public enum Easiness
     {
 	EASY,
 	MEDIUM,
 	HARD
     }
     
-    public enum Resolution
-    {
-        FIXED,
-        WONT_FIX,
-        WORKS_FOR_ME,
-        WORKS_AS_DESIGNED
-    }
-
     public enum Priorities
     {
-        P1,
-        P2,
-        P3,
-        P4,
-        P5
-    }
-
-    public enum Severities
-    {
-        BLOCKER,
-        CRITICAL,
-	FEATURE,
-        MAJOR,
-        MINOR,
-        TRIVIAL
+        HIGH,
+        MEDIUM,
+        LOW
     }
 }

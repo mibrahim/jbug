@@ -11,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -100,38 +98,34 @@ public final class SQL
                 + "("
                 + "bug_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)," // Auto inc id
                 + "assigned_to VARCHAR(64) NOT NULL," // email of the assignee
-                + "severity INTEGER NOT NULL,"
                 + "status INTEGER NOT NULL,"
-//                + "resolution INTEGER,"
                 + "creation_ts BIGINT NOT NULL,"
+                + "modification_ts BIGINT NOT NULL,"
                 + "title VARCHAR(256) NOT NULL,"
                 + "description LONG VARCHAR NOT NULL,"
                 + "comments_json CLOB,"
                 + "priority INTEGER NOT NULL,"
                 + "product VARCHAR(64),"
-//                + "rep_platform VARCHAR(64),"
                 + "reporter VARCHAR(64) NOT NULL,"
                 + "version VARCHAR(64),"
                 + "component VARCHAR(64),"
                 + "target_milestone VARCHAR(64),"
-                + "estimated_load INTEGER,"
+                + "easiness INTEGER,"
                 + "CONSTRAINT primary_key PRIMARY KEY (bug_id)"
                 + ")");
 
         // Secondary indexes
         SQL.queryNoRes("create index i01 on bugs(assigned_to)");
-        SQL.queryNoRes("create index i02 on bugs(severity)");
-        SQL.queryNoRes("create index i03 on bugs(status)");
-        SQL.queryNoRes("create index i04 on bugs(creation_ts)");
+        SQL.queryNoRes("create index i02 on bugs(status)");
+        SQL.queryNoRes("create index i03 on bugs(creation_ts)");
+        SQL.queryNoRes("create index i04 on bugs(modification_ts)");
         SQL.queryNoRes("create index i05 on bugs(priority)");
         SQL.queryNoRes("create index i06 on bugs(product)");
-//        SQL.queryNoRes("create index i07 on bugs(rep_platform)");
         SQL.queryNoRes("create index i08 on bugs(reporter)");
         SQL.queryNoRes("create index i09 on bugs(version)");
         SQL.queryNoRes("create index i10 on bugs(component)");
         SQL.queryNoRes("create index i12 on bugs(target_milestone)");
-        SQL.queryNoRes("create index i13 on bugs(estimated_load)");
-//        SQL.queryNoRes("create index i14 on bugs(resolution)");
+        SQL.queryNoRes("create index i13 on bugs(easiness)");
 
         SQL.setStringVar("dbversion", "1");
         
@@ -229,7 +223,7 @@ public final class SQL
             {
                 case "LONG VARCHAR":
                 case "VARCHAR":
-                    String s = rs.getString(columnName);
+                    String s = rs.getString(columnName).replace("\n","\\n").replace("\r","\\r");
                     b.append((s == null) ? "" : s);
                     break;
 
@@ -243,7 +237,7 @@ public final class SQL
 
                 case "CLOB":
                     Clob clob = rs.getClob(columnName);
-                    b.append((clob == null) ? "" : clob.toString());
+                    b.append((clob == null) ? "" : clob.toString().replace("\n","\\n").replace("\r","\\r"));
                     break;
 
                 default:

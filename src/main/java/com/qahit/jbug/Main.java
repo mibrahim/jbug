@@ -63,7 +63,7 @@ public class Main
      */
     static String getOpenBugCount(HttpServletRequest request) throws SQLException
     {
-	ResultSet rs = SQL.query("select count(*) as count from bugs where status in (0,1,2,3,4,5,6)");
+	ResultSet rs = SQL.query("select count(*) as count from bugs where status in (0,1,2)");
 	String count = "0";
 	if (rs.next())
 	{
@@ -82,7 +82,7 @@ public class Main
      */
     static String getClosedBugCount(HttpServletRequest request) throws SQLException
     {
-	ResultSet rs = SQL.query("select count(*) as count from bugs where status in (7,8)");
+	ResultSet rs = SQL.query("select count(*) as count from bugs where status=3");
 	String count = "0";
 	if (rs.next())
 	{
@@ -102,7 +102,7 @@ public class Main
      */
     static String getOpenBugsIds(HttpServletRequest request) throws SQLException
     {
-	ResultSet rs = SQL.query("select bug_id from bugs where status in (0,1,2,3,4,5,6) order by severity,priority,creation_ts");
+	ResultSet rs = SQL.query("select bug_id, priority from bugs where status in (0,1,2) order by priority, creation_ts desc");
 	StringBuilder b = new StringBuilder();
 	while (rs.next())
 	{
@@ -125,7 +125,7 @@ public class Main
      */
     static String getClosedBugsIds(HttpServletRequest request) throws SQLException
     {
-	ResultSet rs = SQL.query("select bug_id from bugs where status in (7,8) order by creation_ts");
+	ResultSet rs = SQL.query("select bug_id from bugs where status=3 order by creation_ts");
 	StringBuilder b = new StringBuilder();
 	while (rs.next())
 	{
@@ -201,7 +201,7 @@ public class Main
     static String getBugsSummaries(HttpServletRequest request) throws SQLException
     {
 	String pfor = request.getParameter("for");
-	ResultSet rs = SQL.query("select bug_id,title,description,assigned_to,reporter,severity,status,creation_ts,description,priority from bugs where bug_id in (" + pfor + ")");
+	ResultSet rs = SQL.query("select bug_id,title,description,assigned_to,reporter,status,creation_ts,description,priority from bugs where bug_id in (" + pfor + ")");
 	StringBuilder b = new StringBuilder();
 	while (rs.next())
 	{
@@ -263,29 +263,30 @@ public class Main
     {
 	// Status is Assigned
 	PreparedStatement stmt= SQL.dbConnection.prepareStatement("insert into bugs"
-		+ "(title , description , reporter , assigned_to , severity , "
+		+ "(title , description , reporter , assigned_to , "
 		+ "priority , product , component , version , target_milestone, "
-		+ "creation_ts, status) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+		+ "creation_ts, modification_ts, status, easiness) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 	
 	stmt.setString(1, request.getParameter("title"));
 	stmt.setString(2, request.getParameter("description"));
 	stmt.setString(3, request.getParameter("reporter").trim());
 	stmt.setString(4, request.getParameter("assigned_to").trim());
-	stmt.setInt(5,Integer.parseInt(request.getParameter("severity")));
-	stmt.setInt(6,Integer.parseInt(request.getParameter("priority")));
-	stmt.setString(7, request.getParameter("product").toLowerCase().trim());
-	stmt.setString(8, request.getParameter("component").toLowerCase().trim());
-	stmt.setString(9, request.getParameter("version").toLowerCase().trim());
-	stmt.setString(10, request.getParameter("target_milestone").toLowerCase().trim());
+	stmt.setInt(5,Integer.parseInt(request.getParameter("priority")));
+	stmt.setString(6, request.getParameter("product").toLowerCase().trim());
+	stmt.setString(7, request.getParameter("component").toLowerCase().trim());
+	stmt.setString(8, request.getParameter("version").toLowerCase().trim());
+	stmt.setString(9, request.getParameter("target_milestone").toLowerCase().trim());
+	stmt.setLong(10,System.currentTimeMillis());
 	stmt.setLong(11,System.currentTimeMillis());
-	stmt.setInt(12, Bug.Status.ASSIGNED.ordinal());
+	stmt.setInt(12, Bug.Status.OPEN.ordinal());
+	stmt.setInt(13,Integer.parseInt(request.getParameter("easiness")));
 	
 	stmt.execute();
 	
 	// Find the new bug id
-	ResultSet rs=SQL.query("select max(bug_id) as max from bugs");
+	ResultSet rs=SQL.query("select MAX(bug_id) as mxv from bugs");
 	rs.next();
-	int newBugId=rs.getInt("max");
+	int newBugId=rs.getInt("mxv");
 	rs.close();
 	
 	SQL.dbConnection.commit();
@@ -297,22 +298,23 @@ public class Main
     {
 	// Status is Assigned
 	PreparedStatement stmt= SQL.dbConnection.prepareStatement("update bugs "
-		+ "set title=? , description=? , reporter=? , assigned_to=? , severity=? , "
+		+ "set title=? , description=? , reporter=? , assigned_to=? , "
 		+ "priority=? , product=? , component=? , version=? , target_milestone=?, "
-		+ "status=? where bug_id=?");
+		+ "status=?, modification_ts=?, easiness=? where bug_id=?");
 	
 	stmt.setString(1, request.getParameter("title"));
 	stmt.setString(2, request.getParameter("description"));
 	stmt.setString(3, request.getParameter("reporter").trim());
 	stmt.setString(4, request.getParameter("assigned_to").trim());
-	stmt.setInt(5,Integer.parseInt(request.getParameter("severity")));
-	stmt.setInt(6,Integer.parseInt(request.getParameter("priority")));
-	stmt.setString(7, request.getParameter("product").toLowerCase().trim());
-	stmt.setString(8, request.getParameter("component").toLowerCase().trim());
-	stmt.setString(9, request.getParameter("version").toLowerCase().trim());
-	stmt.setString(10, request.getParameter("target_milestone").toLowerCase().trim());
-	stmt.setInt(11, Integer.parseInt(request.getParameter("status")));
-	stmt.setInt(12, Integer.parseInt(request.getParameter("bugid")));
+	stmt.setInt(5,Integer.parseInt(request.getParameter("priority")));
+	stmt.setString(6, request.getParameter("product").toLowerCase().trim());
+	stmt.setString(7, request.getParameter("component").toLowerCase().trim());
+	stmt.setString(8, request.getParameter("version").toLowerCase().trim());
+	stmt.setString(9, request.getParameter("target_milestone").toLowerCase().trim());
+	stmt.setInt(10, Integer.parseInt(request.getParameter("status")));
+	stmt.setInt(11, Integer.parseInt(request.getParameter("bugid")));
+	stmt.setLong(12, System.currentTimeMillis());
+	stmt.setInt(13,Integer.parseInt(request.getParameter("easiness")));
 	
 	stmt.execute();
 	
@@ -370,7 +372,7 @@ public class Main
 		return getBugsSummaries(request);
 	    case "bugids":
 		return getBugIds(request);
-
+                
 	    // Sets and updates
 	    case "updatebug":
 		return updateOrCreateBug(request);

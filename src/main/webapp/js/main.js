@@ -214,10 +214,19 @@ function showCurrentBugPage()
         $("#main").html("No bugs found");
     }
 
-    bugs = JSON.parse(json).bugs;
-    table = "<table><tr class='titlerow'><td style='width:28px;'>#</td><td style='width:28px;'>@</td><td>Sev</td><td>Pri</td><td>Summary</td></tr>";
-    for (i = 0; i !== bugs.length; i++)
-        table += getBugSummaryRow(i + firstBug + 1, bugs[i], ((i % 2) === 0) ? "buglight" : "bugdark");
+    newbugs = JSON.parse(json).bugs;
+    table = "<table width='100%'><tr class='titlerow'><td style='width:28px;'>#</td><td style='width:28px;'>@</td><td>Pri</td><td>Summary</td></tr>";
+    for (j = firstBug; j < bugs.length && j < firstBug + pageSize; j++) {
+        for (i = 0; i !== newbugs.length; i++)
+        {
+            if (newbugs[i].BUG_ID === bugs[j])
+            {
+                table += getBugSummaryRow(j + firstBug + 1, newbugs[i], ((i % 2) === 0) ? "buglight" : "bugdark");
+                break;
+            }
+        }
+
+    }
     table += "</table>";
     $("#main").html(navBar + table);
 }
@@ -248,7 +257,6 @@ function getBugSummaryRow(num, bug, color)
     row = "<tr class='bugsummaryrow " + color + "'>" +
             "<td><b>" + num + "</b></td>" +
             "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
-            "<td>" + getSeverityName(bug.SEVERITY) + "</td>" +
             "<td>P" + (parseInt(bug.PRIORITY) + 1) + "</td>" +
             "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>" + bug.TITLE + "</a></b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
 
@@ -323,9 +331,10 @@ function bugEdit()
         bug.PRODUCT = "";
         bug.COMPONENT = "";
         bug.VERSION = "";
-        bug.SEVERITY = "";
         bug.PRIORITY = "";
         bug.TARGET_MILESTONE = "";
+        bug.STATUS = "0";
+        bug.EASINESS = "";
 
     }
 
@@ -335,13 +344,10 @@ function bugEdit()
     html += "<tr><td class='fieldname' valign='top'>Description:</td><td><textarea rows='5' class='txtarea' name='description' id='description'>" + bug.DESCRIPTION + "</textarea></td></tr>";
     html += "<tr><td class='fieldname'>Reporter:</td><td><input type='text' class='txtfield' name='reporter' id='reporter' value='" + bug.REPORTER + "'/></td></tr>";
     html += "<tr><td class='fieldname'>Assigned to:</td><td><input type='text' class='txtfield' name='assigned_to' id='assigned_to' value='" + bug.ASSIGNED_TO + "'/></td></tr>";
-    html += "<tr><td class='fieldname'>Severity:</td><td>\n\
-    <input type='radio' name='severity' value='0'>Blocker\n\
-    <input type='radio' name='severity' value='1'>Critical\n\
-    <input type='radio' name='severity' value='2'>Feature\n\
-    <input type='radio' name='severity' value='3'>Major\n\
-    <input type='radio' name='severity' value='4'>Minor\n\
-    <input type='radio' name='severity' value='5'>Trivial\n\
+    html += "<tr><td class='fieldname'>Easiness:</td><td>\n\
+    <input type='radio' name='easiness' value='0'>Easy\n\
+    <input type='radio' name='easiness' value='1'>Medium\n\
+    <input type='radio' name='easiness' value='2'>Hard\n\
     </td></tr>";
     html += "<tr><td class='fieldname'>Priority:</td><td>\n\
     <input type='radio' name='priority' value='0'>P1\n\
@@ -351,14 +357,10 @@ function bugEdit()
     <input type='radio' name='priority' value='4'>P5\n\
     </td></tr>";
     html += "<tr><td class='fieldname'>Status:</td><td>\n\
-    <input type='radio' name='status' value='0'>Unconfirmed\n\
-    <input type='radio' name='status' value='1'>New\n\
-    <input type='radio' name='status' value='2'>Assigned\n\
-    <input type='radio' name='status' value='3'>Reopened\n\
-    <input type='radio' name='status' value='4'>Ready\n\
-    <input type='radio' name='status' value='5'>In progress\n\
-    <input type='radio' name='status' value='6'>Resolved\n\
-    <input type='radio' name='status' value='7'>Verified\n\
+    <input type='radio' name='status' value='0'>Open\n\
+    <input type='radio' name='status' value='1'>In progress\n\
+    <input type='radio' name='status' value='2'>Paused\n\
+    <input type='radio' name='status' value='3'>Closed\
     </td></tr>";
     html += "<tr><td class='fieldname'>Product:</td><td>\n\
     <input type='text' class='txtfield' id='product' name='product' id='product' value='" + bug.PRODUCT + "'>\n\
@@ -462,23 +464,35 @@ function getField(fieldname)
 }
 function saveBug()
 {
-    url="/data.jsp?get=updatebug?";
-    url+=getField("bugid");
+    url="/data.jsp?get=updatebug";
+    url+="&"+getField("bugid");
     url+="&"+getField("title");
     url+="&"+getField("description");
     url+="&"+getField("reporter");
     url+="&"+getField("assigned_to");
-    severity="0";
-    if($('input:radio[name=severity]:checked').val()!==undefined)
-        severity=$('input:radio[name=severity]:checked').val();
-    url+="&severity="+severity;
+    easiness="0";
+    if($('input:radio[name=easiness]:checked').val()!==undefined)
+        easiness=$('input:radio[name=easiness]:checked').val();
+    url+="&easiness="+easiness;
     priority="0";
     if($('input:radio[name=priority]:checked').val()!==undefined)
         priority=$('input:radio[name=priority]:checked').val();
     url+="&priority="+priority;
+    status="0";
+    if($('input:radio[name=status]:checked').val()!==undefined)
+        priority=$('input:radio[name=status]:checked').val();
+    url+="&status="+status;
     url+="&"+getField("product");
     url+="&"+getField("component");
     url+="&"+getField("version");
     url+="&"+getField("target_milestone");
-    alert(url);
+
+    // Save the bug 
+    $.ajax({
+        url: url,
+        async: true,
+        context: document.body
+    }).done(function(data) {
+        window.location="/#do=bugdetails&bugid="+data;
+    });
 }

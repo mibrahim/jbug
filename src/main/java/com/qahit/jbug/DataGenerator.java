@@ -34,7 +34,6 @@ public class DataGenerator
         for (int i = 0; i != 1000; i++)
         {
             String assigned_to = emails.get(rgen.nextInt(emails.size()));
-            int severity = rgen.nextInt(Bug.Severities.values().length);
             int status = rgen.nextInt(Bug.Status.values().length);
             long creation_ts = System.currentTimeMillis() + rgen.nextInt(60 * 24 * 60 * 60 * 1000) - 30 * 24 * 60 * 60 * 1000;    // Within +- 30 days
             String title = Utils.capitalizeInitials(lr.getWords(3, rgen.nextInt(50)));
@@ -44,7 +43,6 @@ public class DataGenerator
 
             String sql = "insert into bugs(assigned_to,severity,status,creation_ts,title,description,priority,reporter) values ("
                          + "'" + assigned_to + "',"
-                         + "" + severity + ","
                          + "" + status + ","
                          + "" + creation_ts + ","
                          + "'" + title + "',"
