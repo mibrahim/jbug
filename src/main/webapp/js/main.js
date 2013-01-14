@@ -231,33 +231,21 @@ function showCurrentBugPage()
     $("#main").html(navBar + table);
 }
 
-function getSeverityName(severity)
-{
-    switch (severity)
-    {
-        case "0":
-            return "Blocker";
-        case "1":
-            return "Critical";
-        case "2":
-            return "Feature";
-        case "3":
-            return "Major";
-        case "4":
-            return "Minor";
-        case "5":
-            return "Trivial";
-    }
-}
-
 function getBugSummaryRow(num, bug, color)
 {
+    priority=["High", "Medium", "Low"];
+    st=[ "<i class='icon-circle-blank'></i>",
+             "<i class='icon-play'></i>",
+             "<i class='icon-pause'></i>",
+             "<i class='icon-ok'></i>"
+         ];
+    
     if (color === undefined)
         color = "white";
     row = "<tr class='bugsummaryrow " + color + "'>" +
             "<td><b>" + num + "</b></td>" +
             "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
-            "<td>P" + (parseInt(bug.PRIORITY) + 1) + "</td>" +
+            "<td>" + st[parseInt(bug.STATUS)]+" "+priority[parseInt(bug.PRIORITY)] + "</td>" +
             "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>" + bug.TITLE + "</a></b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
 
     row += "</tr>";
