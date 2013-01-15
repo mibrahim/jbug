@@ -233,19 +233,19 @@ function showCurrentBugPage()
 
 function getBugSummaryRow(num, bug, color)
 {
-    priority=["High", "Medium", "Low"];
-    st=[ "<i class='icon-circle-blank'></i>",
-             "<i class='icon-play'></i>",
-             "<i class='icon-pause'></i>",
-             "<i class='icon-ok'></i>"
-         ];
-    
+    priority = ["High", "Medium", "Low"];
+    st = ["<i class='icon-circle-blank'></i>",
+        "<i class='icon-play'></i>",
+        "<i class='icon-pause'></i>",
+        "<i class='icon-ok'></i>"
+    ];
+
     if (color === undefined)
         color = "white";
     row = "<tr class='bugsummaryrow " + color + "'>" +
             "<td><b>" + num + "</b></td>" +
             "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
-            "<td>" + st[parseInt(bug.STATUS)]+" "+priority[parseInt(bug.PRIORITY)] + "</td>" +
+            "<td>" + st[parseInt(bug.STATUS)] + " " + priority[parseInt(bug.PRIORITY)] + "</td>" +
             "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>" + bug.TITLE + "</a></b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
 
     row += "</tr>";
@@ -262,7 +262,8 @@ function showBugDetails()
         bug = JSON.parse(data);
     });
 
-    html = "<table>";
+    html = "<div style='float:right;'><a href='#do=bugedit&bugid=" + bug.BUG_ID + "' style='text-decoration:none;'><i class='icon-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
+    html += "<table>";
     html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64) + "</td>";
     html += "<td><h1>" + bug.TITLE + "</h1>";
     html += "<span class='bugseverity'>";
@@ -311,7 +312,7 @@ function bugEdit()
     {
         bug = new Object();
         bugId = "new";
-        bug.BUGID = "new";
+        bug.BUG_ID = "new";
         bug.REPORTER = jBugUser;
         bug.TITLE = "";
         bug.ASSIGNED_TO = "";
@@ -333,22 +334,20 @@ function bugEdit()
     html += "<tr><td class='fieldname'>Reporter:</td><td><input type='text' class='txtfield' name='reporter' id='reporter' value='" + bug.REPORTER + "'/></td></tr>";
     html += "<tr><td class='fieldname'>Assigned to:</td><td><input type='text' class='txtfield' name='assigned_to' id='assigned_to' value='" + bug.ASSIGNED_TO + "'/></td></tr>";
     html += "<tr><td class='fieldname'>Easiness:</td><td>\n\
-    <input type='radio' name='easiness' value='0'>Easy\n\
-    <input type='radio' name='easiness' value='1'>Medium\n\
-    <input type='radio' name='easiness' value='2'>Hard\n\
+    <input type='radio' name='easiness' value='0' "+((bug.EASINESS==="0")?"checked":"")+">Easy\n\
+    <input type='radio' name='easiness' value='1' "+((bug.EASINESS==="1")?"checked":"")+">Medium\n\
+    <input type='radio' name='easiness' value='2' "+((bug.EASINESS==="2")?"checked":"")+">Hard\n\
     </td></tr>";
     html += "<tr><td class='fieldname'>Priority:</td><td>\n\
-    <input type='radio' name='priority' value='0'>P1\n\
-    <input type='radio' name='priority' value='1'>P2\n\
-    <input type='radio' name='priority' value='2'>P3\n\
-    <input type='radio' name='priority' value='3'>P4\n\
-    <input type='radio' name='priority' value='4'>P5\n\
+    <input type='radio' name='priority' value='0' "+((bug.PRIORITY==="0")?"checked":"")+">High\n\
+    <input type='radio' name='priority' value='1' "+((bug.PRIORITY==="1")?"checked":"")+">Medium\n\
+    <input type='radio' name='priority' value='2' "+((bug.PRIORITY==="2")?"checked":"")+">Low\n\
     </td></tr>";
     html += "<tr><td class='fieldname'>Status:</td><td>\n\
-    <input type='radio' name='status' value='0'>Open\n\
-    <input type='radio' name='status' value='1'>In progress\n\
-    <input type='radio' name='status' value='2'>Paused\n\
-    <input type='radio' name='status' value='3'>Closed\
+    <input type='radio' name='status' value='0' "+((bug.STATUS==="0")?"checked":"")+">Open\n\
+    <input type='radio' name='status' value='1' "+((bug.STATUS==="1")?"checked":"")+">In progress\n\
+    <input type='radio' name='status' value='2' "+((bug.STATUS==="2")?"checked":"")+">Paused\n\
+    <input type='radio' name='status' value='3' "+((bug.STATUS==="3")?"checked":"")+">Closed\
     </td></tr>";
     html += "<tr><td class='fieldname'>Product:</td><td>\n\
     <input type='text' class='txtfield' id='product' name='product' id='product' value='" + bug.PRODUCT + "'>\n\
@@ -368,11 +367,11 @@ function bugEdit()
     html += "</table>";
 
     $("#main").html(html);
-    
+
     // If the bug is new, set status to assigned and set the input to read only
     if (bugId === 'new')
     {
-	$('input:radio[name="status",value="2"]').attr('checked', 'checked');
+        $('input:radio[name="status",value="2"]').attr('checked', 'checked');
     }
 
     // Autocomplete the reporters and the assigned_to
@@ -381,9 +380,12 @@ function bugEdit()
         async: true,
         context: document.body
     }).done(function(data) {
-        if (data.length() > 0)
-            data += ",";
-        data += jBugUser;
+        if (data.indexOf(jBugUser) === -1)
+        {
+            if (data.length > 0)
+                data += ",";
+            data += "'" + jBugUser + "'";
+        }
         eval("var ausers=[" + data + "];");
         $("#reporter").autocomplete({
             source: ausers
@@ -399,8 +401,8 @@ function bugEdit()
         async: true,
         context: document.body
     }).done(function(data) {
-        if (data.length() > 0)
-        eval("var aproducts=[" + data + "];");
+        if (data.length > 0)
+            eval("var aproducts=[" + data + "];");
         $("#product").autocomplete({
             source: aproducts
         });
@@ -412,8 +414,8 @@ function bugEdit()
         async: true,
         context: document.body
     }).done(function(data) {
-        if (data.length() > 0)
-        eval("var acomponents=[" + data + "];");
+        if (data.length > 0)
+            eval("var acomponents=[" + data + "];");
         $("#component").autocomplete({
             source: acomponents
         });
@@ -425,8 +427,8 @@ function bugEdit()
         async: true,
         context: document.body
     }).done(function(data) {
-        if (data.length() > 0)
-        eval("var aversions=[" + data + "];");
+        if (data.length > 0)
+            eval("var aversions=[" + data + "];");
         $("#version").autocomplete({
             source: aversions
         });
@@ -434,12 +436,12 @@ function bugEdit()
 
     // Autocomplete the target_milestone
     $.ajax({
-        url: "/data.jsp?get=target_milestone",
+        url: "/data.jsp?get=target_milestones",
         async: true,
         context: document.body
     }).done(function(data) {
-        if (data.length() > 0)
-        eval("var atarget_milestone=[" + data + "];");
+        if (data.length > 0)
+            eval("var atarget_milestone=[" + data + "];");
         $("#target_milestone").autocomplete({
             source: atarget_milestone
         });
@@ -448,32 +450,33 @@ function bugEdit()
 
 function getField(fieldname)
 {
-    return fieldname+"="+encodeURI($("#"+fieldname).val());    
+    return fieldname + "=" + encodeURI($("#" + fieldname).val());
 }
+
 function saveBug()
 {
-    url="/data.jsp?get=updatebug";
-    url+="&"+getField("bugid");
-    url+="&"+getField("title");
-    url+="&"+getField("description");
-    url+="&"+getField("reporter");
-    url+="&"+getField("assigned_to");
-    easiness="0";
-    if($('input:radio[name=easiness]:checked').val()!==undefined)
-        easiness=$('input:radio[name=easiness]:checked').val();
-    url+="&easiness="+easiness;
-    priority="0";
-    if($('input:radio[name=priority]:checked').val()!==undefined)
-        priority=$('input:radio[name=priority]:checked').val();
-    url+="&priority="+priority;
-    status="0";
-    if($('input:radio[name=status]:checked').val()!==undefined)
-        priority=$('input:radio[name=status]:checked').val();
-    url+="&status="+status;
-    url+="&"+getField("product");
-    url+="&"+getField("component");
-    url+="&"+getField("version");
-    url+="&"+getField("target_milestone");
+    url = "/data.jsp?get=updatebug";
+    url += "&" + getField("bugid");
+    url += "&" + getField("title");
+    url += "&" + getField("description");
+    url += "&" + getField("reporter");
+    url += "&" + getField("assigned_to");
+    easiness = "0";
+    if ($('input:radio[name=easiness]:checked').val() !== undefined)
+        easiness = $('input:radio[name=easiness]:checked').val();
+    url += "&easiness=" + easiness;
+    priority = "0";
+    if ($('input:radio[name=priority]:checked').val() !== undefined)
+        priority = $('input:radio[name=priority]:checked').val();
+    url += "&priority=" + priority;
+    status = "0";
+    if ($('input:radio[name=status]:checked').val() !== undefined)
+        status = $('input:radio[name=status]:checked').val();
+    url += "&status=" + status;
+    url += "&" + getField("product");
+    url += "&" + getField("component");
+    url += "&" + getField("version");
+    url += "&" + getField("target_milestone");
 
     // Save the bug 
     $.ajax({
@@ -481,6 +484,6 @@ function saveBug()
         async: true,
         context: document.body
     }).done(function(data) {
-        window.location="/#do=bugdetails&bugid="+data;
+        window.location = "/#do=bugdetails&bugid=" + data;
     });
 }

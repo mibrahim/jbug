@@ -54,6 +54,22 @@ public class Main
 	return res.toString();
     }
 
+    static String getDistinctColumn(HttpServletRequest request,String column) throws SQLException
+    {
+	StringBuilder res = new StringBuilder();
+	ResultSet rs = SQL.query("select distinct("+column+") from bugs");
+	while (rs.next())
+	{
+            String value=rs.getString(column);
+            if (value.length()==0) continue;
+            if (res.length()>0) res.append(",");
+	    res.append("'").append(value).append("'");
+	}
+	rs.close();
+
+	return res.toString();
+    }
+
     /**
      * Returns the count of open bugs
      *
@@ -312,11 +328,12 @@ public class Main
 	stmt.setString(8, request.getParameter("version").toLowerCase().trim());
 	stmt.setString(9, request.getParameter("target_milestone").toLowerCase().trim());
 	stmt.setInt(10, Integer.parseInt(request.getParameter("status")));
-	stmt.setInt(11, Integer.parseInt(request.getParameter("bugid")));
-	stmt.setLong(12, System.currentTimeMillis());
-	stmt.setInt(13,Integer.parseInt(request.getParameter("easiness")));
+	stmt.setLong(11, System.currentTimeMillis());
+	stmt.setInt(12,Integer.parseInt(request.getParameter("easiness")));
+	stmt.setInt(13, Integer.parseInt(request.getParameter("bugid")));
 	
 	stmt.execute();
+        SQL.dbConnection.commit();
 	
 	return request.getParameter("bugid");
     }
@@ -356,6 +373,14 @@ public class Main
 	    // Gets
 	    case "users":
 		return getUsers(request);
+	    case "products":
+		return getDistinctColumn(request,"product");
+	    case "components":
+		return getDistinctColumn(request,"component");
+	    case "target_milestones":
+		return getDistinctColumn(request,"target_milestone");
+	    case "versions":
+		return getDistinctColumn(request,"version");
 	    case "openbugcount":
 		return getOpenBugCount(request);
 	    case "closedbugcount":
