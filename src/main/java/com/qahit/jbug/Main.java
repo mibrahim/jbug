@@ -45,7 +45,7 @@ public class Main
 	for (String user : users)
 	{
 	    user = user.trim();
-	    if (users.length() > 0)
+	    if (user.length() > 0)
 	    {
 		if (res.length() > 0)
 		{
