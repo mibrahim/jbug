@@ -221,7 +221,7 @@ function showCurrentBugPage()
 	{
 	    if (newbugs[i].BUG_ID === bugs[j])
 	    {
-		table += getBugSummaryRow(j + firstBug + 1, newbugs[i], ((i % 2) === 0) ? "buglight" : "bugdark");
+		table += getBugSummaryRow(j + firstBug + 1, newbugs[i], ((j % 2) === 0) ? "buglight" : "bugdark");
 		break;
 	    }
 	}
@@ -266,28 +266,34 @@ function showBugDetails()
     html += "<table>";
     html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64) + "</td>";
     html += "<td><h1>" + bug.TITLE + "</h1>";
-    html += "<span class='bugseverity'>";
-    html += "<b>P" + (parseInt(bug.PRIORITY) + 1) + "</b> ";
-    switch (bug.SEVERITY)
+    switch (bug.PRIORITY)
     {
 	case "0":
-	    html += "<i class='icon-remove-sign' title='blocker'>";
+	    html += "<i class='icon-arrow-up' style='color:#FF4040;' title='High'>";
 	    break;
 	case "1":
-	    html += "<i class='icon-warning-sign' title='critical'>";
+	    html += "<i class='icon-icon-minus' style='color:#00FF00;' title='Medium'>";
 	    break;
 	case "2":
-	    html += "<i class='icon-circle' title='major'>";
-	    break;
-	case "3":
-	    html += "<i class='icon-circle' title='minor'>";
-	    break;
-	case "4":
-	    html += "<i class='icon-circle' title='trivial'>";
+	    html += "<i class='icon-arrow-down' style='color:#4040FF;' title='Low'>";
 	    break;
     }
-    html += "</i></span></td></tr></table><br/>";
-    html += "<span class='bugdescription'>" + bug.DESCRIPTION + "</span>";
+    
+    html += "</i>";
+    
+    st = ["<i class='icon-circle-blank' title='Open'></i>",
+	"<i class='icon-play' title='In progress'></i>",
+	"<i class='icon-pause' title='Paused'></i>",
+	"<i class='icon-ok' title='Completed'></i>"
+    ];
+
+    easiness=["Easy","Medium","Hard"];
+    
+    html+=st[parseInt(bug.STATUS)];
+    html+=" "+easiness[parseInt(bug.EASINESS)];
+    html+=" <a href=''>"+bug.PRODUCT+"</a> <a href=''>"+bug.COMPONENT+"</a>";
+    html+="</td></tr></table><br/>";
+    html += "<span class='bugdescription'><pre>" + bug.DESCRIPTION + "</pre></span>";
     $("#main").html(html);
 }
 

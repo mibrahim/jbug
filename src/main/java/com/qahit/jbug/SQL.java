@@ -37,6 +37,10 @@ public final class SQL implements Closeable
     {
 	try
 	{
+	    // This synchronization together is meant to be mutually exclusive
+	    // with the piece of code in close. It is meant to stop one jetty
+	    // thread from attempting to close the database while another is trying
+	    // to open it here.
 	    synchronized (counter)
 	    {
 		Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
@@ -59,6 +63,8 @@ public final class SQL implements Closeable
     {
 	try
 	{
+	    // See the comment at the constructor for informatino on why
+	    // to synchronize even though the counter is atomic
 	    synchronized (counter)
 	    {
 		dbConnection.commit();
@@ -67,6 +73,11 @@ public final class SQL implements Closeable
 		int currentValue = counter.decrementAndGet();
 		if (currentValue == 0)
 		{
+		    // Set this value to true if you are developing. By that way
+		    // when netbeans deploys your touched code, jetty will reload
+		    // it but will close the database after every set of page views
+		    // and so will avoid causing derby to crash erring that the
+		    // db is already booted
 		    String close=System.getProperty("jbug.close");
 		    
 		    if (close!=null && close.equalsIgnoreCase("true"))
