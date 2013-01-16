@@ -484,6 +484,6 @@ function saveBug()
         async: true,
         context: document.body
     }).done(function(data) {
-        window.location = "/#do=bugdetails&bugid=" + data;
+        window.location = "#do=bugdetails&bugid=" + data;
     });
 }
