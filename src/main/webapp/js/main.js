@@ -86,7 +86,7 @@ function setMainContentHeight()
 function updateBugStatusBar()
 {
     $.ajax({
-        url: "/data.jsp?get=openbugcount",
+        url: "data.jsp?get=openbugcount",
         context: document.body
     }).done(function(data) {
         $("#openbugs").html(data);
@@ -98,7 +98,7 @@ var buglist = "";
 function showOpenBugs()
 {
     $.ajax({
-        url: "/data.jsp?get=openbugids",
+        url: "data.jsp?get=openbugids",
         context: document.body
     }).done(function(data) {
         bugList = data;
@@ -202,7 +202,7 @@ function showCurrentBugPage()
     }
 
     $.ajax({
-        url: "/data.jsp?get=bugssummaries&for=" + ids,
+        url: "data.jsp?get=bugssummaries&for=" + ids,
         async: false,
         context: document.body
     }).done(function(data) {
@@ -255,7 +255,7 @@ function getBugSummaryRow(num, bug, color)
 function showBugDetails()
 {
     $.ajax({
-        url: "/data.jsp?get=bug&for=" + bugId,
+        url: "data.jsp?get=bug&for=" + bugId,
         async: false,
         context: document.body
     }).done(function(data) {
@@ -301,7 +301,7 @@ function bugEdit()
     if (bugId !== "new")
     {
         $.ajax({
-            url: "/data.jsp?get=bug&for=" + bugId,
+            url: "data.jsp?get=bug&for=" + bugId,
             async: false,
             context: document.body
         }).done(function(data) {
@@ -376,7 +376,7 @@ function bugEdit()
 
     // Autocomplete the reporters and the assigned_to
     $.ajax({
-        url: "/data.jsp?get=users",
+        url: "data.jsp?get=users",
         async: true,
         context: document.body
     }).done(function(data) {
@@ -397,7 +397,7 @@ function bugEdit()
 
     // Autocomplete the products
     $.ajax({
-        url: "/data.jsp?get=products",
+        url: "data.jsp?get=products",
         async: true,
         context: document.body
     }).done(function(data) {
@@ -410,7 +410,7 @@ function bugEdit()
 
     // Autocomplete the component
     $.ajax({
-        url: "/data.jsp?get=components",
+        url: "data.jsp?get=components",
         async: true,
         context: document.body
     }).done(function(data) {
@@ -423,7 +423,7 @@ function bugEdit()
 
     // Autocomplete the versions
     $.ajax({
-        url: "/data.jsp?get=versions",
+        url: "data.jsp?get=versions",
         async: true,
         context: document.body
     }).done(function(data) {
@@ -436,7 +436,7 @@ function bugEdit()
 
     // Autocomplete the target_milestone
     $.ajax({
-        url: "/data.jsp?get=target_milestones",
+        url: "data.jsp?get=target_milestones",
         async: true,
         context: document.body
     }).done(function(data) {
@@ -455,7 +455,7 @@ function getField(fieldname)
 
 function saveBug()
 {
-    url = "/data.jsp?get=updatebug";
+    url = "data.jsp?get=updatebug";
     url += "&" + getField("bugid");
     url += "&" + getField("title");
     url += "&" + getField("description");

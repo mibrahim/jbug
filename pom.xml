@@ -55,7 +55,6 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                    <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
             <plugin>
@@ -64,6 +63,10 @@
                 <version>7.0.1.v20091125</version>
                 <configuration>
                     <scanIntervalSeconds>1</scanIntervalSeconds>
+                    <showDeprecation>true</showDeprecation>
+                    <webAppConfig>
+                        <contextPath>/jbug</contextPath>
+                    </webAppConfig>
                 </configuration>
             </plugin>
         </plugins>
