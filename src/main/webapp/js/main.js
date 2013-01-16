@@ -87,7 +87,8 @@ function updateBugStatusBar()
 {
     $.ajax({
 	url: "data.jsp?get=openbugcount",
-	context: document.body
+	context: document.body,
+	async: true
     }).done(function(data) {
 	$("#openbugs").html(data);
     });
@@ -514,6 +515,7 @@ function saveBug()
 	async: true,
 	context: document.body
     }).done(function(data) {
+	updateBugStatusBar();
 	updateOpenBugsList();
 	window.location = "#do=bugdetails&bugid=" + data;
     });
