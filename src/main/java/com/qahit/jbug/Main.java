@@ -45,11 +45,14 @@ public class Main
 	for (String user : users)
 	{
 	    user = user.trim();
-	    if (user.length() > 0)
+	    if (users.length() > 0)
 	    {
-		res.append(",");
+		if (res.length() > 0)
+		{
+		    res.append(",");
+		}
+		res.append("'").append(user).append("'");
 	    }
-	    res.append("'").append(user).append("'");
 	}
 
 	return res.toString();
