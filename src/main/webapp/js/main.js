@@ -399,9 +399,9 @@ function bugEdit()
 	context: document.body
     }).done(function(data) {
 
-	if (data !== undefined && data.indexOf(jBugUser) === -1)
+	if (data === undefined || data.indexOf(jBugUser) === -1)
 	{
-	    if (data.length > 0)
+	    if (data !== undefined && data.length > 0)
 		data += ",";
 	    data += "'" + jBugUser + "'";
 	}
