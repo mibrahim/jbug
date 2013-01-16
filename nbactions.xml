@@ -6,6 +6,7 @@
                 <goal>package</goal>
                 <goal>-Djetty.port=9010</goal>
                 <goal>jetty:run</goal>
+                <goal>-Djbug.close=true</goal>
             </goals>
         </action>
     </actions>
