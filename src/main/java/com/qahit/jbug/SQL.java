@@ -67,7 +67,12 @@ public final class SQL implements Closeable
 		int currentValue = counter.decrementAndGet();
 		if (currentValue == 0)
 		{
-		    DriverManager.getConnection("jdbc:derby:jBug;shutdown=true");
+		    String close=System.getProperty("jbug.close");
+		    
+		    if (close!=null && close.equalsIgnoreCase("true"))
+		    {
+			DriverManager.getConnection("jdbc:derby:jBug;shutdown=true");
+		    }
 		}
 	    }
 	}
