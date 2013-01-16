@@ -95,6 +95,17 @@ function updateBugStatusBar()
 
 var buglist = "";
 
+function updateOpenBugsList()
+{
+    $.ajax({
+	url: "data.jsp?get=openbugids",
+	context: document.body,
+	async: false
+    }).done(function(data) {
+	bugList = data;
+    });
+}
+
 function showOpenBugs()
 {
     $.ajax({
@@ -503,6 +514,7 @@ function saveBug()
 	async: true,
 	context: document.body
     }).done(function(data) {
+	updateOpenBugsList();
 	window.location = "#do=bugdetails&bugid=" + data;
     });
 }
