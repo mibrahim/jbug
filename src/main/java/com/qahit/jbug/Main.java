@@ -65,7 +65,7 @@ public class Main
 	while (rs.next())
 	{
 	    String value = rs.getString(column);
-	    if (value.length() == 0)
+	    if (value!=null && value.length() == 0)
 	    {
 		continue;
 	    }
@@ -415,7 +415,13 @@ public class Main
 		default:
 		    return "Unkown request: " + pget;
 	    }
-	} finally
+	}
+	catch(Exception e)
+	{
+	    System.out.append("ERROR while requesting URL: "+request.getRequestURI());
+	    throw new SQLException("ERROR while requesting URL: "+request.getRequestURI(), e);
+	}
+	finally
 	{
 	    sql.close();
 	}

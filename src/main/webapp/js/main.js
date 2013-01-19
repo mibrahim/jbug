@@ -8,6 +8,20 @@ var pageToDisplay;
 var params;
 var bugId;
 
+// Constants
+var STATUS = [
+    "<i class='icon-circle-blank' style='color:red;' title='Open'></i>",
+    "<i class='icon-play' style='color:blue;' title='In progress'></i>",
+    "<i class='icon-pause' style='color:brown;' title='Paused'></i>",
+    "<i class='icon-ok' style='color:green;' title='Completed'></i>"
+];
+
+var PRIORITY = [
+    "<i class='icon-arrow-up' style='color:red;' title='High'></i>",
+    "<i class='icon-minus' style='color:green;' title='Medium'></i>",
+    "<i class='icon-arrow-down' style='color:blue;' title='Low'></i>"
+];
+
 // Location update detector
 var oldLocation = location.href;
 setInterval(function() {
@@ -245,19 +259,12 @@ function showCurrentBugPage()
 
 function getBugSummaryRow(num, bug, color)
 {
-    priority = ["High", "Medium", "Low"];
-    st = ["<i class='icon-circle-blank'></i>",
-	"<i class='icon-play'></i>",
-	"<i class='icon-pause'></i>",
-	"<i class='icon-ok'></i>"
-    ];
-
     if (color === undefined)
 	color = "white";
     row = "<tr class='bugsummaryrow " + color + "'>" +
 	    "<td><b>" + num + "</b></td>" +
 	    "<td>" + getUserGravatarImg(bug.ASSIGNED_TO) + "</td>" +
-	    "<td>" + st[parseInt(bug.STATUS)] + " " + priority[parseInt(bug.PRIORITY)] + "</td>" +
+	    "<td>" + STATUS[parseInt(bug.STATUS)] + PRIORITY[parseInt(bug.PRIORITY)] + "</td>" +
 	    "<td class='bugsummarydesctd' style='max-width:" + (winW - 170) + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>" + bug.TITLE + "</a></b><span class='summarydesc'> - " + bug.DESCRIPTION + "</span></td>";
 
     row += "</tr>";
@@ -278,34 +285,16 @@ function showBugDetails()
     html += "<table>";
     html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64) + "</td>";
     html += "<td><h1>" + bug.TITLE + "</h1>";
-    switch (bug.PRIORITY)
-    {
-	case "0":
-	    html += "<i class='icon-arrow-up' style='color:#FF4040;' title='High'>";
-	    break;
-	case "1":
-	    html += "<i class='icon-icon-minus' style='color:#00FF00;' title='Medium'>";
-	    break;
-	case "2":
-	    html += "<i class='icon-arrow-down' style='color:#4040FF;' title='Low'>";
-	    break;
-    }
-    
-    html += "</i>";
-    
-    st = ["<i class='icon-circle-blank' title='Open'></i>",
-	"<i class='icon-play' title='In progress'></i>",
-	"<i class='icon-pause' title='Paused'></i>",
-	"<i class='icon-ok' title='Completed'></i>"
-    ];
 
+    html += PRIORITY[parseInt(bug.PRIORITY)]+" ";
+    
     easiness=["Easy","Medium","Hard"];
     
-    html+=st[parseInt(bug.STATUS)];
+    html+=STATUS[parseInt(bug.STATUS)];
     html+=" "+easiness[parseInt(bug.EASINESS)];
     html+=" <a href=''>"+bug.PRODUCT+"</a> <a href=''>"+bug.COMPONENT+"</a>";
     html+="</td></tr></table><br/>";
-    html += "<div class='bugdescription'><code>" + bug.DESCRIPTION + "</code></div>";
+    html += "<div class='bugdescription'><pre>" + bug.DESCRIPTION + "</pre></div>";
     $("#main").html(html);
 }
 

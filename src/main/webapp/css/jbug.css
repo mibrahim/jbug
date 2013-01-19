@@ -76,11 +76,11 @@ body{
 }
 
 .buglight{
-    background: #dde;
+    background: #f8f8f8;
 }
 
 .bugdark{
-    background: #edd;
+    background: #ffffff;
 }
 
 .navpg{
@@ -117,9 +117,10 @@ body{
     color: #fff;
 }
 
-.bugdescription code{
+.bugdescription pre{
     font-family: Droid Sans Mono;
     font-size: 1em;
+    white-space:pre-wrap;
 }
 
 .usergravatar{
