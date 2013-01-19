@@ -47,10 +47,10 @@ public final class SQL implements Closeable
 		dbConnection = DriverManager.getConnection("jdbc:derby:jBug;create=true");
 		dbConnection.setAutoCommit(false);
 		counter.incrementAndGet();
+		// Since we just connected, then check the DB version and upgrade if necessary
+		checkDBVersion();
 	    }
 
-	    // Since we just connected, then check the DB version and upgrade if necessary
-	    checkDBVersion();
 	} catch (Exception e)
 	{
 	    e.printStackTrace();
@@ -267,7 +267,9 @@ public final class SQL implements Closeable
 	    {
 		case "LONG VARCHAR":
 		case "VARCHAR":
-		    String s = rs.getString(columnName).replace("\n", "\\n").replace("\r", "\\r");
+		    String val=rs.getString(columnName);
+		    if (val==null) val="";
+		    String s = val.replace("\n", "\\n").replace("\r", "\\r");
 		    b.append((s == null) ? "" : s);
 		    break;
 

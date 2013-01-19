@@ -117,7 +117,7 @@ body{
     color: #fff;
 }
 
-.bugdescription pre{
+.bugdescription code{
     font-family: Droid Sans Mono;
     font-size: 1em;
 }

@@ -305,7 +305,7 @@ function showBugDetails()
     html+=" "+easiness[parseInt(bug.EASINESS)];
     html+=" <a href=''>"+bug.PRODUCT+"</a> <a href=''>"+bug.COMPONENT+"</a>";
     html+="</td></tr></table><br/>";
-    html += "<span class='bugdescription'><pre>" + bug.DESCRIPTION + "</pre></span>";
+    html += "<div class='bugdescription'><code>" + bug.DESCRIPTION + "</code></div>";
     $("#main").html(html);
 }
 

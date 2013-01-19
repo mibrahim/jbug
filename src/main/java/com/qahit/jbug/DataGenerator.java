@@ -41,9 +41,10 @@ public class DataGenerator
 	    int priority = rgen.nextInt(Bug.Priorities.values().length);
 	    String reporter = emails.get(rgen.nextInt(emails.size()));
 
-	    String stmt = "insert into bugs(assigned_to,severity,status,creation_ts,title,description,priority,reporter) values ("
+	    String stmt = "insert into bugs(assigned_to,status,creation_ts,modification_ts,title,description,priority,reporter) values ("
 		    + "'" + assigned_to + "',"
 		    + "" + status + ","
+		    + "" + creation_ts + ","
 		    + "" + creation_ts + ","
 		    + "'" + title + "',"
 		    + "'" + description + "',"
