@@ -408,6 +408,8 @@ public class Main
 		    return getBugsSummaries(request, sql);
 		case "bugids":
 		    return getBugIds(request, sql);
+		case "producttarget_milestonebugs":
+		    return getProductTargetMilestoneBugs(request, sql);
 
 		// Sets and updates
 		case "updatebug":
@@ -425,5 +427,23 @@ public class Main
 	{
 	    sql.close();
 	}
+    }
+
+    private static String getProductTargetMilestoneBugs(HttpServletRequest request, SQL sql) throws SQLException
+    {
+	String target_milestone=request.getParameter("target_milestone");
+	String product=request.getParameter("product");
+	ResultSet rs=sql.query("select bug_id from bugs where "
+			       + "target_milestone='"+target_milestone+"' and product='"+product+"'");
+	StringBuilder b=new StringBuilder();
+	while(rs.next())
+	{
+	    if (b.length()>0)
+	    {
+		b.append(",");
+	    }
+	    b.append(rs.getString("bug_id"));
+	}
+	return b.toString();
     }
 }
