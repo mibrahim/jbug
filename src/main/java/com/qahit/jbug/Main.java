@@ -51,7 +51,9 @@ public class Main
 		{
 		    res.append(",");
 		}
-		res.append("'").append(user).append("'");
+		res.append("'")
+			.append(user)
+			.append("'");
 	    }
 	}
 
@@ -65,7 +67,7 @@ public class Main
 	while (rs.next())
 	{
 	    String value = rs.getString(column);
-	    if (value!=null && value.length() == 0)
+	    if (value != null && value.length() == 0)
 	    {
 		continue;
 	    }
@@ -73,7 +75,9 @@ public class Main
 	    {
 		res.append(",");
 	    }
-	    res.append("'").append(value).append("'");
+	    res.append("'")
+		    .append(value)
+		    .append("'");
 	}
 	rs.close();
 
@@ -128,7 +132,8 @@ public class Main
      */
     static String getOpenBugsIds(HttpServletRequest request, SQL sql) throws SQLException
     {
-	ResultSet rs = sql.query("select bug_id, priority from bugs where status in (0,1,2) order by priority, creation_ts desc");
+	ResultSet rs = sql.query(
+		"select bug_id, priority from bugs where status in (0,1,2) order by priority, creation_ts desc");
 	StringBuilder b = new StringBuilder();
 	while (rs.next())
 	{
@@ -180,7 +185,8 @@ public class Main
 	if (rs.next())
 	{
 	    b.append(SQL.currentRowToJSON(rs));
-	} else
+	}
+	else
 	{
 	    b.append("Not found");
 	}
@@ -189,8 +195,8 @@ public class Main
     }
 
     /**
-     * Returns the details of several bugs given their comma separated list of
-     * IDs. The result is formatted as a JSON array.
+     * Returns the details of several bugs given their comma separated list of IDs. The result is formatted as a JSON
+     * array.
      *
      * @param request
      * @return
@@ -216,7 +222,8 @@ public class Main
 	if (b.length() == 0)
 	{
 	    b.append("Not found");
-	} else
+	}
+	else
 	{
 	    b.append("\n]}");
 	}
@@ -227,29 +234,32 @@ public class Main
     static String getBugsSummaries(HttpServletRequest request, SQL sql) throws SQLException
     {
 	String pfor = request.getParameter("for");
-	ResultSet rs = sql.query("select bug_id,title,description,assigned_to,reporter,status,creation_ts,description,priority from bugs where bug_id in (" + pfor + ")");
-	StringBuilder b = new StringBuilder();
-	while (rs.next())
-	{
-	    if (b.length() > 0)
-	    {
-		b.append(",\n");
-	    }
-	    if (b.length() == 0)
-	    {
-		b.append("{\"bugs\":[");
-	    }
-	    b.append(SQL.currentRowToJSON(rs));
-	}
-	if (b.length() == 0)
-	{
-	    b.append("Not found");
-	} else
-	{
-	    b.append("\n]}");
-	}
-	rs.close();
-	return b.toString();
+	ResultSet rs = sql
+		.query(
+		"select bug_id,title,description,assigned_to,reporter,status,creation_ts,description,priority from bugs where bug_id in (" + pfor + ")");
+		StringBuilder b = new StringBuilder();
+		while (rs.next())
+		{
+		    if (b.length() > 0)
+		    {
+			b.append(",\n");
+		    }
+		    if (b.length() == 0)
+		    {
+			b.append("{\"bugs\":[");
+		    }
+		    b.append(SQL.currentRowToJSON(rs));
+		}
+		if (b.length() == 0)
+		{
+		    b.append("Not found");
+		}
+		else
+		{
+		    b.append("\n]}");
+		}
+		rs.close();
+		return b.toString();
     }
 
     static String getBugIds(HttpServletRequest request, SQL sql) throws SQLException
@@ -288,20 +298,31 @@ public class Main
     static String createNewBug(HttpServletRequest request, SQL sql) throws SQLException
     {
 	// Status is Assigned
-	PreparedStatement stmt = sql.getConnection().prepareStatement("insert into bugs"
-		+ "(title , description , reporter , assigned_to , "
-		+ "priority , product , component , version , target_milestone, "
-		+ "creation_ts, modification_ts, status, easiness) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+	PreparedStatement stmt = sql.getConnection()
+		.prepareStatement("insert into bugs"
+				  + "(title , description , reporter , assigned_to , "
+				  + "priority , product , component , version , target_milestone, "
+				  + "creation_ts, modification_ts, status, easiness) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 	stmt.setString(1, request.getParameter("title"));
 	stmt.setString(2, request.getParameter("description"));
-	stmt.setString(3, request.getParameter("reporter").trim());
-	stmt.setString(4, request.getParameter("assigned_to").trim());
+	stmt.setString(3, request.getParameter("reporter")
+		.trim());
+	stmt.setString(4, request.getParameter("assigned_to")
+		.trim());
 	stmt.setInt(5, Integer.parseInt(request.getParameter("priority")));
-	stmt.setString(6, request.getParameter("product").toLowerCase().trim());
-	stmt.setString(7, request.getParameter("component").toLowerCase().trim());
-	stmt.setString(8, request.getParameter("version").toLowerCase().trim());
-	stmt.setString(9, request.getParameter("target_milestone").toLowerCase().trim());
+	stmt.setString(6, request.getParameter("product")
+		.toLowerCase()
+		.trim());
+	stmt.setString(7, request.getParameter("component")
+		.toLowerCase()
+		.trim());
+	stmt.setString(8, request.getParameter("version")
+		.toLowerCase()
+		.trim());
+	stmt.setString(9, request.getParameter("target_milestone")
+		.toLowerCase()
+		.trim());
 	stmt.setLong(10, System.currentTimeMillis());
 	stmt.setLong(11, System.currentTimeMillis());
 	stmt.setInt(12, Bug.Status.OPEN.ordinal());
@@ -321,20 +342,31 @@ public class Main
     static String updateBug(HttpServletRequest request, SQL sql) throws SQLException
     {
 	// Status is Assigned
-	PreparedStatement stmt = sql.getConnection().prepareStatement("update bugs "
-		+ "set title=? , description=? , reporter=? , assigned_to=? , "
-		+ "priority=? , product=? , component=? , version=? , target_milestone=?, "
-		+ "status=?, modification_ts=?, easiness=? where bug_id=?");
+	PreparedStatement stmt = sql.getConnection()
+		.prepareStatement("update bugs "
+				  + "set title=? , description=? , reporter=? , assigned_to=? , "
+				  + "priority=? , product=? , component=? , version=? , target_milestone=?, "
+				  + "status=?, modification_ts=?, easiness=? where bug_id=?");
 
-	stmt.setString(1, request.getParameter("title"));
-	stmt.setString(2, request.getParameter("description"));
-	stmt.setString(3, request.getParameter("reporter").trim());
-	stmt.setString(4, request.getParameter("assigned_to").trim());
+	stmt.setString(1, request.getParameter("title").trim());
+	stmt.setString(2, request.getParameter("description").trim());
+	stmt.setString(3, request.getParameter("reporter")
+		.trim());
+	stmt.setString(4, request.getParameter("assigned_to")
+		.trim());
 	stmt.setInt(5, Integer.parseInt(request.getParameter("priority")));
-	stmt.setString(6, request.getParameter("product").toLowerCase().trim());
-	stmt.setString(7, request.getParameter("component").toLowerCase().trim());
-	stmt.setString(8, request.getParameter("version").toLowerCase().trim());
-	stmt.setString(9, request.getParameter("target_milestone").toLowerCase().trim());
+	stmt.setString(6, request.getParameter("product")
+		.toLowerCase()
+		.trim());
+	stmt.setString(7, request.getParameter("component")
+		.toLowerCase()
+		.trim());
+	stmt.setString(8, request.getParameter("version")
+		.toLowerCase()
+		.trim());
+	stmt.setString(9, request.getParameter("target_milestone")
+		.toLowerCase()
+		.trim());
 	stmt.setInt(10, Integer.parseInt(request.getParameter("status")));
 	stmt.setLong(11, System.currentTimeMillis());
 	stmt.setInt(12, Integer.parseInt(request.getParameter("easiness")));
@@ -358,7 +390,8 @@ public class Main
 	if (bugid.equalsIgnoreCase("new"))
 	{
 	    return createNewBug(request, sql);
-	} else
+	}
+	else
 	{
 	    return updateBug(request, sql);
 	}
@@ -408,6 +441,10 @@ public class Main
 		    return getBugsSummaries(request, sql);
 		case "bugids":
 		    return getBugIds(request, sql);
+		case "producttarget_milestones":
+		    return getProductTargetMilestones(request, sql);
+		case "producttarget_milestonebugs":
+		    return getProductTargetMilestoneBugs(request, sql);
 
 		// Sets and updates
 		case "updatebug":
@@ -416,14 +453,52 @@ public class Main
 		    return "Unkown request: " + pget;
 	    }
 	}
-	catch(Exception e)
+	catch (Exception e)
 	{
-	    System.out.append("ERROR while requesting URL: "+request.getRequestURI());
-	    throw new SQLException("ERROR while requesting URL: "+request.getRequestURI(), e);
+	    System.out.append("ERROR while requesting URL: " + request.getRequestURI());
+	    throw new SQLException("ERROR while requesting URL: " + request.getRequestURI(), e);
 	}
 	finally
 	{
 	    sql.close();
 	}
+    }
+
+    private static String getProductTargetMilestoneBugs(HttpServletRequest request, SQL sql) throws SQLException
+    {
+	String target_milestone = request.getParameter("target_milestone");
+	String product = request.getParameter("product");
+	ResultSet rs = sql.query("select bug_id, status from bugs where "
+				 + "target_milestone='" + target_milestone + "' and product='" + product + "' "
+				 + "order by status, creation_ts");
+	StringBuilder b = new StringBuilder();
+	while (rs.next())
+	{
+	    if (b.length() > 0)
+	    {
+		b.append(",");
+	    }
+	    b.append(rs.getString("bug_id"))
+		    .append("#")
+		    .append(rs.getString("status"));
+	}
+	return b.toString();
+    }
+
+    private static String getProductTargetMilestones(HttpServletRequest request, SQL sql) throws SQLException
+    {
+	String product = request.getParameter("product");
+	ResultSet rs = sql.query("select distinct(target_milestone) as target_milestone from bugs where product='"
+				 + product + "' order by target_milestone desc");
+	StringBuilder b = new StringBuilder();
+	while (rs.next())
+	{
+	    if (b.length() > 0)
+	    {
+		b.append(",");
+	    }
+	    b.append(rs.getString("target_milestone"));
+	}
+	return b.toString();
     }
 }

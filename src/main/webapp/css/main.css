@@ -23,10 +23,11 @@ body h1{
 }
 
 body h2{
-    font-family: Arial;
-    margin-bottom:10px;
-    margin-top: 3px;
-    border-bottom: 1px solid #000;
+    font-family: "Coda";
+    font-size: 1.5em;
+    color: #444;
+    padding: 0px;
+    margin: 0px;
 }
 
 a{

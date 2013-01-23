@@ -3,6 +3,7 @@
         <a href="#" class="btn btn-green" title="Home"><i class="icon-home"></i></a> &nbsp;
         <a href="" class="btn btn-blue" title="Search"><i class="icon-search"></i><i class="icon-arrow-down"></i></a> &nbsp;
         <a href="#do=bugedit&bugid=new" onclick="showCurrentPage()" class="btn btn-blue" title="New bug"><i class="icon-star"></i></a> &nbsp;
+        <a href="#do=roadmap" class="btn btn-blue" title="New bug"><i class="icon-road"></i></a> &nbsp;
         <span class="status" id="bugstatus">
             Open Bugs: <span id="openbugs"></span> 
         </span>

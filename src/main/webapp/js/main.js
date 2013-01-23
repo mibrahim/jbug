@@ -175,6 +175,9 @@ function showCurrentPage()
 	case "bugedit":
 	    bugEdit();
 	    break;
+	case "roadmap":
+	    roadMap();
+	    break;
     }
 }
 
@@ -286,14 +289,14 @@ function showBugDetails()
     html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64) + "</td>";
     html += "<td><h1>" + bug.TITLE + "</h1>";
 
-    html += PRIORITY[parseInt(bug.PRIORITY)]+" ";
-    
-    easiness=["Easy","Medium","Hard"];
-    
-    html+=STATUS[parseInt(bug.STATUS)];
-    html+=" "+easiness[parseInt(bug.EASINESS)];
-    html+=" <a href=''>"+bug.PRODUCT+"</a> <a href=''>"+bug.COMPONENT+"</a>";
-    html+="</td></tr></table><br/>";
+    html += PRIORITY[parseInt(bug.PRIORITY)] + " ";
+
+    easiness = ["Easy", "Medium", "Hard"];
+
+    html += STATUS[parseInt(bug.STATUS)];
+    html += " " + easiness[parseInt(bug.EASINESS)];
+    html += " <a href=''>" + bug.PRODUCT + "</a> <a href=''>" + bug.COMPONENT + "</a>";
+    html += "</td></tr></table><br/>";
     html += "<div class='bugdescription'><pre>" + bug.DESCRIPTION + "</pre></div>";
     $("#main").html(html);
 }
@@ -508,4 +511,136 @@ function saveBug()
 	updateOpenBugsList();
 	window.location = "#do=bugdetails&bugid=" + data;
     });
+}
+
+function svgDoubleProgressBar(completed, inprogress)
+{
+    var svg="";
+    svg += "<svg width='200px' height='32px' xmlns='http://www.w3.org/2000/svg' version='1.1'>\n";
+
+    // Draw the border and close the svg
+    svg += "<rect x='0' y='0' width='200px' height='32px' style='fill:white;stroke:black;stroke-width:3'/>";
+	    
+    // Draw the completed
+    svg += "<rect x='0' y='0' width='" + Math.floor(2 * completed) + "px' height='32px' style='fill:blue;stroke:none'/>";
+
+    // Draw the inprogress
+    svg += "<rect x='" + Math.floor(2 * completed) + "' y='0' width='" + Math.floor(2 * inprogress) + "px' height='32px' style='fill:green;stroke:none'/>";
+
+    // Draw the border and close the svg
+    svg += "<rect x='0' y='0' width='200px' height='32px' style='fill:none;stroke:grey;stroke-width:3'/>";
+
+    svg+="</svg>";
+    return svg;
+}
+
+function renderMilestoneProgressBar(product, milestone)
+{
+    var myhtml="";
+    dataurl="data.jsp?get=producttarget_milestonebugs&product=" + product + "&target_milestone=" + milestone;
+    $.ajax({
+	url: dataurl,
+	async: false,
+	context: document.body
+    }).done(function(data) {
+	// Count which ones are complete, and which are open,inproress,paused
+	bugs = (data+",").split(",");
+    });
+    complete = 0.;
+    inprogress = 0;
+    open = 0;
+    var buglist = "";
+    for (i = 0; i < bugs.length - 1; i++)
+    {
+	var status = bugs[i].split("#");
+	var zeroes="00000";
+	var bugid= zeroes.substring(status[0].length)+status[0];
+	var thisBug = "<a href='#do=bugdetails&bugid=" + status[0] + "'>[" + bugid + "]</a> ";
+	
+	// Get the bug summary
+	var bugdetails;
+	$.ajax({
+	    url: "data.jsp?get=bug&for="+status[0],
+	    async: false,
+	    context: document.body
+	}).done(function(data) {
+	    // Count which ones are complete, and which are open,inproress,paused
+	    bugdetails = JSON.parse(data);
+	});
+	thisBug+=bugdetails.TITLE;
+	switch (status[1])
+	{
+	    case '0':
+		open++;
+		break;
+	    case '1':
+	    case '2':
+		inprogress++;
+		break;
+	    case '3':
+		thisBug="<span style='text-decoration: line-through;'>"+thisBug+"</span>";
+		complete++;
+		break;
+	}
+	buglist+=thisBug+"<br/>";
+    }
+    total = open + inprogress + complete;
+    svg = svgDoubleProgressBar(100.0 * complete / total, 100.0 * inprogress / total);
+    myhtml += svg + "<br/><b>"+open+" open, "+inprogress+" inprogress, "+complete+" complete</b><br/>"+buglist;
+    return myhtml;
+}
+
+function viewProductRoadmap(product)
+{
+    // Get product milestones
+    var html = "<h1>"+product+"</h1>";
+    html+="<div style='font-family: Droid Sans Mono;'>";
+    $.ajax({
+	url: "data.jsp?get=producttarget_milestones&product=" + product,
+	async: false,
+	context: document.body
+    }).done(function(data) {
+	var milestones = data.split(",");
+	for (a = 0; a < milestones.length; a++)
+	{
+	    html += milestones[a] +
+		    "<br/>" + renderMilestoneProgressBar(product, milestones[a]) +
+		    "<br/>";
+	}
+    });
+    html+="</div>";
+
+    $("#main").html(html);
+}
+
+function roadMap()
+{
+    var products;
+
+    if (params['product'] !== undefined)
+    {
+	viewProductRoadmap(params['product']);
+	return;
+    }
+
+    // Get the products
+    $.ajax({
+	url: "data.jsp?get=products",
+	async: false,
+	context: document.body
+    }).done(function(data) {
+	products = data.split(",");
+	products.sort();
+    });
+
+    html = "<h1>Products roadmap</h1>Select one of the products:<br/><ol>";
+
+    for (i = 0; i !== products.length; i++)
+    {
+	products[i] = products[i].substring(1, products[i].length - 1);
+	html += "<li><a href='#do=roadmap&product=" + products[i] + "'>" + products[i] + "</a>";
+    }
+    html += "</ol>";
+
+    $("#main").html(html);
 }
