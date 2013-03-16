@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<colorTheme id="14346" name="FlexTheme77" modified="2013-02-21 02:33:39" author="James">
+    <searchResultIndication color="#000000" />
+    <filteredSearchResultIndication color="#000000" />
+    <occurrenceIndication color="#000000" />
+    <writeOccurrenceIndication color="#000000" />
+    <findScope color="#111111" />
+    <deletionIndication color="#D25252" />
+    <sourceHoverBackground color="#000000" />
+    <singleLineComment color="#FBDC60" italic="false" />
+    <multiLineComment color="#FBDC60" italic="false" />
+    <commentTaskTag color="#777777" italic="false" />
+    <javadoc color="#777777" bold="false" italic="false" />
+    <javadocLink color="#D9E577" bold="false" italic="false" />
+    <javadocTag color="#FBDC60" bold="false" italic="false" />
+    <javadocKeyword color="#D9E577" bold="false" italic="false" />
+    <class color="#2B91AF" bold="false" underline="false" strikethrough="false" />
+    <interface color="#2B91AF" />
+    <method color="#FFFFFF" />
+    <methodDeclaration color="#BED6FF" />
+    <bracket color="#D8D8D8" />
+    <number color="#7FB347" />
+    <string color="#777777" bold="false" />
+    <operator color="#D8D8D8" />
+    <keyword color="#9898D2" bold="false" />
+    <annotation color="#FFFFFF" />
+    <staticMethod color="#FFFFFF" />
+    <localVariable color="#FFFFFF" bold="false" />
+    <localVariableDeclaration color="#CE4B2C" />
+    <field color="#ED9865" bold="false" />
+    <staticField color="#EFC090" />
+    <staticFinalField color="#EFC090" />
+    <deprecatedMember color="#D25252" underline="false" strikethrough="true" />
+    <enum color="#7FB347" />
+    <inheritedMethod color="#BED6FF" />
+    <abstractMethod color="#BED6FF" />
+    <parameterVariable color="#79ABFF" />
+    <typeArgument color="#BFA4A4" />
+    <typeParameter color="#BFA4A4" />
+    <constant color="#EFC090" />
+    <background color="#000000" />
+    <currentLine color="#2A2A2A" />
+    <foreground color="#D8D8D8" />
+    <lineNumber color="#D0D0D0" />
+    <selectionBackground color="#1E1E1E" />
+    <selectionForeground color="#D0D0D0" />
+</colorTheme>

@@ -1,0 +1,5 @@
+style "eclipse" {
+        font_name = "Monospaced 8"
+}
+class "GtkWidget" style "eclipse"
+

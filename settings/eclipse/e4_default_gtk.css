@@ -1,0 +1,110 @@
+
+.MTrimmedWindow.topLevel { 
+    margin-top: 5px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.MPartStack {
+	border: #808080 1px solid;
+/*    swt-tab-renderer: null;*/
+    swt-selected-tabs-background: #606060 #707070 100%;
+    swt-unselected-tabs-color: #404040 #404040 #404040 100% 100%;
+    swt-outer-keyline-color: #404040;
+	swt-inner-keyline-color: #404040;
+	padding: 0px;
+	swt-tab-outline: #606060;
+	swt-shadow-visible: true;
+	swt-mru-visible: false;
+}
+
+.MPartStack.active {
+	swt-inner-keyline-color: #202020;
+	swt-tab-outline: #404040;
+	swt-shadow-visible: true;
+}
+
+#PerspectiveSwitcher {
+	eclipse-perspective-keyline-color: #000040 #000040;
+}
+
+.MToolControl.TrimStack {
+/*	frame-image:  url(./winXPTSFrame.png);
+	handle-image:  url(./winXPHandle.png);*/
+/*	frame-image: null;
+	handle-image: null;*/
+/*	frame-cuts: 5px 1px 5px 16px;*/
+	border: #808080 1px solid;
+}
+
+.MToolBar.Draggable {
+/*	handle-image: null; /* url(./dragHandle.png);*/
+	border: #808080 1px solid;
+}
+
+.MToolControl.Draggable {
+/*	handle-image:  null; /*url(./dragHandle.png);*/
+	border: #808080 1px solid;
+}
+
+.MTrimmedWindow { 
+    background-color: #101010; 
+}
+
+.MPartStack {
+	font-size: 8;
+	font-family: Monospaced, Courier New;
+	swt-simple: false;
+	swt-mru-visible: false;
+}
+
+.MTrimBar {
+    background-color: #101010; 
+}
+
+.MTrimBar#org-eclipse-ui-main-toolbar  {
+	background-color: #202020;
+}
+
+.MTrimBar#org-eclipse-ui-main-toolbar  ToolBar {
+	background-color: #202020;
+}
+
+.MToolControl.TrimStack {
+/*	frame-image:  null; /*url(./gtkTSFrame.png);*/
+/*	handle-image:  null; /*url(./gtkHandle.png);*/
+	border: #808080 1px solid;
+}
+
+.MPartStack.active {
+	swt-unselected-tabs-color: #101010 #202020 #404040 100% 100%;
+	swt-outer-keyline-color: #202020;
+	swt-tab-outline: #404040;
+}
+
+#PerspectiveSwitcher { 
+	background-color: #101010 #202020 100%;
+
+	eclipse-perspective-keyline-color: #505050 #505050;
+}
+
+#org-eclipse-ui-editorss {
+/*   swt-tab-renderer: null;*/
+   swt-unselected-tabs-color: #303030 #303030 #303030 100% 100%;
+   swt-outer-keyline-color: #444444;
+   swt-inner-keyline-color: #808080;
+   swt-tab-outline: #0000F0;
+   color: #F0F0F0;
+   swt-tab-height: 8px;
+   padding: 0px 5px 7px;
+}
+
+CTabFolder.MArea .MPartStack, CTabFolder.MArea .MPartStack.active {
+   swt-shadow-visible: false;
+}
+
+CTabFolder Canvas {
+	background-color: #202020;
+}
+
