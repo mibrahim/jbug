@@ -473,7 +473,7 @@ function bugEdit()
 
 function getField(fieldname)
 {
-    return fieldname + "=" + encodeURI($("#" + fieldname).val());
+    return fieldname + "=" + encodeURIComponent($("#" + fieldname).val());
 }
 
 function saveBug()
