@@ -55,8 +55,8 @@
 .MPartStack {
 	font-size: 8;
 	font-family: Monospaced, Courier New;
-	swt-simple: false;
-	swt-mru-visible: false;
+	swt-simple: true;
+	swt-mru-visible: true;
 }
 
 .MTrimBar {
@@ -108,3 +108,8 @@ CTabFolder Canvas {
 	background-color: #202020;
 }
 
+.MPlaceHolder
+{
+	background-color: #202020;
+	color: #FFFFFF;
+}
