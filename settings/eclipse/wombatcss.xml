@@ -33,7 +33,7 @@
     <background color="#242424" />
     <currentLine color="#1A1A1A" />
     <foreground color="#f6f3e8" />
-    <lineNumber color="#A0A0FF" />
+    <lineNumber color="#A0A0A0" />
     <selectionBackground color="#303030" />
     <selectionForeground color="#FFFFFF" />
 </colorTheme>
