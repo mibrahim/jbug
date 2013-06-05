@@ -50,8 +50,8 @@ public class Main
 					res.append(",");
 				}
 				res.append("'")
-				        .append(user)
-				        .append("'");
+						.append(user)
+						.append("'");
 			}
 		}
 
@@ -74,8 +74,8 @@ public class Main
 				res.append(",");
 			}
 			res.append("'")
-			        .append(value)
-			        .append("'");
+					.append(value)
+					.append("'");
 		}
 		rs.close();
 
@@ -137,7 +137,7 @@ public class Main
 	static String getOpenBugsIds(HttpServletRequest request, SQL sql) throws SQLException
 	{
 		ResultSet rs = sql.query(
-		        "select bug_id, priority from bugs where status in (0,1,2) order by priority, creation_ts desc");
+				"select bug_id, priority from bugs where status in (0,1,2) order by priority, creation_ts desc");
 		StringBuilder b = new StringBuilder();
 		while (rs.next())
 		{
@@ -245,9 +245,10 @@ public class Main
 	{
 		String pfor = request.getParameter("for");
 		ResultSet rs = sql
-		        .query(
-		        "select bug_id,title,description,assigned_to,reporter,status,creation_ts,description,priority from bugs where bug_id in (" +
-		                pfor + ")");
+				.query(
+				"select bug_id,title,description,assigned_to,reporter,status,creation_ts,description,priority from bugs where bug_id in ("
+						+
+						pfor + ")");
 		StringBuilder b = new StringBuilder();
 		while (rs.next())
 		{
@@ -310,30 +311,30 @@ public class Main
 	{
 		// Status is Assigned
 		PreparedStatement stmt = sql.getConnection()
-		        .prepareStatement("insert into bugs"
-		                          + "(title , description , reporter , assigned_to , "
-		                          + "priority , product , component , version , target_milestone, "
-		                          + "creation_ts, modification_ts, status, easiness) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				.prepareStatement("insert into bugs"
+						+ "(title , description , reporter , assigned_to , "
+						+ "priority , product , component , version , target_milestone, "
+						+ "creation_ts, modification_ts, status, easiness) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		stmt.setString(1, request.getParameter("title"));
 		stmt.setString(2, request.getParameter("description"));
 		stmt.setString(3, request.getParameter("reporter")
-		        .trim());
+				.trim());
 		stmt.setString(4, request.getParameter("assigned_to")
-		        .trim());
+				.trim());
 		stmt.setInt(5, Integer.parseInt(request.getParameter("priority")));
 		stmt.setString(6, request.getParameter("product")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setString(7, request.getParameter("component")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setString(8, request.getParameter("version")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setString(9, request.getParameter("target_milestone")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setLong(10, System.currentTimeMillis());
 		stmt.setLong(11, System.currentTimeMillis());
 		stmt.setInt(12, Bug.Status.OPEN.ordinal());
@@ -350,34 +351,41 @@ public class Main
 		return "" + newBugId;
 	}
 
+	static String deleteBug(HttpServletRequest request, SQL sql) throws SQLException
+	{
+		String cmd = "delete from bugs where bug_id=" + request.getParameter("bugid");
+		sql.queryNoRes(cmd);
+		return "ok";
+	}
+
 	static String updateBug(HttpServletRequest request, SQL sql) throws SQLException
 	{
 		// Status is Assigned
 		PreparedStatement stmt = sql.getConnection()
-		        .prepareStatement("update bugs "
-		                          + "set title=? , description=? , reporter=? , assigned_to=? , "
-		                          + "priority=? , product=? , component=? , version=? , target_milestone=?, "
-		                          + "status=?, modification_ts=?, easiness=? where bug_id=?");
+				.prepareStatement("update bugs "
+						+ "set title=? , description=? , reporter=? , assigned_to=? , "
+						+ "priority=? , product=? , component=? , version=? , target_milestone=?, "
+						+ "status=?, modification_ts=?, easiness=? where bug_id=?");
 
 		stmt.setString(1, request.getParameter("title").trim());
 		stmt.setString(2, request.getParameter("description").trim());
 		stmt.setString(3, request.getParameter("reporter")
-		        .trim());
+				.trim());
 		stmt.setString(4, request.getParameter("assigned_to")
-		        .trim());
+				.trim());
 		stmt.setInt(5, Integer.parseInt(request.getParameter("priority")));
 		stmt.setString(6, request.getParameter("product")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setString(7, request.getParameter("component")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setString(8, request.getParameter("version")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setString(9, request.getParameter("target_milestone")
-		        .toLowerCase()
-		        .trim());
+				.toLowerCase()
+				.trim());
 		stmt.setInt(10, Integer.parseInt(request.getParameter("status")));
 		stmt.setLong(11, System.currentTimeMillis());
 		stmt.setInt(12, Integer.parseInt(request.getParameter("easiness")));
@@ -430,41 +438,45 @@ public class Main
 			switch (pget)
 			{
 			// Gets
-				case "users":
+				case "users" :
 					return getUsers(request, sql);
-				case "products":
+				case "products" :
 					return getDistinctColumn(request, "product", sql);
-				case "components":
+				case "components" :
 					return getDistinctColumn(request, "component", sql);
-				case "target_milestones":
+				case "target_milestones" :
 					return getDistinctColumn(request, "target_milestone", sql);
-				case "versions":
+				case "versions" :
 					return getDistinctColumn(request, "version", sql);
-				case "openbugcount":
+				case "openbugcount" :
 					return getOpenBugCount(request, sql);
-				case "closedbugcount":
+				case "closedbugcount" :
 					return getClosedBugCount(request, sql);
-				case "openbugids":
+				case "openbugids" :
 					return getOpenBugsIds(request, sql);
-				case "closedbugids":
+				case "closedbugids" :
 					return getClosedBugsIds(request, sql);
-				case "bug":
+				case "bug" :
 					return getBug(request, sql);
-				case "bugs":
+				case "bugs" :
 					return getBugs(request, sql);
-				case "bugssummaries":
+				case "bugssummaries" :
 					return getBugsSummaries(request, sql);
-				case "bugids":
+				case "bugids" :
 					return getBugIds(request, sql);
-				case "producttarget_milestones":
+				case "producttarget_milestones" :
 					return getProductTargetMilestones(request, sql);
-				case "producttarget_milestonebugs":
+				case "producttarget_milestonebugs" :
 					return getProductTargetMilestoneBugs(request, sql);
 
 					// Sets and updates
-				case "updatebug":
+				case "updatebug" :
 					return updateOrCreateBug(request, sql);
-				default:
+
+				case "deletebug" :
+					return deleteBug(request, sql);
+
+				default :
 					return "Unkown request: " + pget;
 			}
 		} catch (Exception e)
@@ -482,8 +494,8 @@ public class Main
 		String target_milestone = request.getParameter("target_milestone");
 		String product = request.getParameter("product");
 		ResultSet rs = sql.query("select bug_id, status from bugs where "
-		                         + "target_milestone='" + target_milestone + "' and product='" + product + "' "
-		                         + "order by status, creation_ts");
+				+ "target_milestone='" + target_milestone + "' and product='" + product + "' "
+				+ "order by status, creation_ts");
 		StringBuilder b = new StringBuilder();
 		while (rs.next())
 		{
@@ -492,8 +504,8 @@ public class Main
 				b.append(",");
 			}
 			b.append(rs.getString("bug_id"))
-			        .append("#")
-			        .append(rs.getString("status"));
+					.append("#")
+					.append(rs.getString("status"));
 		}
 		return b.toString();
 	}
@@ -502,7 +514,7 @@ public class Main
 	{
 		String product = request.getParameter("product");
 		ResultSet rs = sql.query("select distinct(target_milestone) as target_milestone from bugs where product='"
-		                         + product + "' order by target_milestone desc");
+				+ product + "' order by target_milestone desc");
 		StringBuilder b = new StringBuilder();
 		while (rs.next())
 		{
