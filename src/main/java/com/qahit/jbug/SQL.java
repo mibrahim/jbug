@@ -121,6 +121,11 @@ public final class SQL implements Closeable
 		{
 			upgradeToV001();
 		}
+
+		if (getDBVersion() < 2)
+		{
+			upgradeToV002();
+		}
 	}
 
 	/**
@@ -169,6 +174,29 @@ public final class SQL implements Closeable
 		setStringVar("dbversion", "1");
 
 		System.out.println("Upgraded to V001");
+		dbConnection.commit();
+	}
+
+	void upgradeToV002() throws SQLException
+	{
+		System.out.println("Upgrading to v002");
+
+		// Main table
+		queryNoRes(
+		"CREATE TABLE dependencies"
+				+ "("
+				+ "supertask INTEGER NOT NULL REFERENCES bugs,"
+				+ "subtask INTEGER NOT NULL REFERENCES bugs"
+				+ ")");
+
+		// Secondary indexes
+		queryNoRes("ALTER TABLE dependencies ADD PRIMARY KEY (supertask, subtask)");
+		queryNoRes("create index j01 on dependencies(supertask)");
+		queryNoRes("create index j02 on dependencies(subtask)");
+
+		setStringVar("dbversion", "2");
+
+		System.out.println("Upgraded to V002");
 		dbConnection.commit();
 	}
 
