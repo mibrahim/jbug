@@ -22,12 +22,19 @@ import org.apache.log4j.Logger;
 public class SQL implements Closeable
 {
 
+	static
+	{
+		LoggerInitializer.initialize();
+	}
+
 	private static final Logger log = Logger.getLogger(SQL.class);
 	final static AtomicInteger counter = new AtomicInteger(0);
 	/**
 	 * Store the database connection
 	 */
 	private Connection dbConnection = null;
+
+	private static final LuceneManager luceneManager = LuceneManager.get();
 
 	/**
 	 * Converts the current row to a json string.

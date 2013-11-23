@@ -60,6 +60,7 @@ public class LuceneManager extends Thread
 		if (instance == null)
 		{
 			instance = new LuceneManager();
+			instance.start();
 		}
 		return instance;
 	}
@@ -182,6 +183,8 @@ public class LuceneManager extends Thread
 
 	public static void deleteBugFromIndex(String bugId)
 	{
+		log.info("Deleting bug " + bugId);
+
 		try
 		{
 			Term term = new Term("bug_id", bugId);
@@ -199,6 +202,8 @@ public class LuceneManager extends Thread
 	{
 		// Before adding a document, delete it
 		deleteBugFromIndex(bugId);
+
+		log.info("Indexing bug " + bugId);
 
 		Document doc = new Document();
 
@@ -256,21 +261,24 @@ public class LuceneManager extends Thread
 
 	private LuceneManager()
 	{
+		File luceneIndexDirectory = new File("LuceneIndex");
+
+		log.info("Opening index at: " + luceneIndexDirectory.getAbsolutePath());
 		log.info("Creating the index manager");
 		try
 		{
-			index = new SimpleFSDirectory(new File("LuceneIndex"));
+			index = new SimpleFSDirectory(luceneIndexDirectory);
 		} catch (IOException ex)
 		{
 			try
 			{
 				// Ok, try to delete the directory and recreate the index
-				FileUtils.deleteDirectory(new File("LuceneIndex"));
+				FileUtils.deleteDirectory(luceneIndexDirectory);
 
 				// Reset all indexed bugs
 				(new SQL()).queryNoRes("update bugs set indexed=0");
 
-				index = new SimpleFSDirectory(new File("LuceneIndex"));
+				index = new SimpleFSDirectory(luceneIndexDirectory);
 			} catch (IOException | SQLException ex1)
 			{
 				log.error("Error while initializing lucene, cannot continue", ex1);

@@ -39,12 +39,30 @@ class MySearchWarmer extends SearcherFactory
 			"reporter", "product", "description", "comments",
 			"title", "status", "assignedto", "bug_id",
 		}, analyzer);
-		try (final SQL sql = new SQL(); final ResultSet resultSet = sql.query("select * from bug limit 100"))
+
+		int counter = 0;
+
+		try (final SQL sql = new SQL(); final ResultSet resultSet = sql.query("select * from bugs"))
 		{
 			// Warm up by searching for all the top categories
 			while (resultSet.next())
 			{
-				Query query = queryParser.parse(resultSet.getString("title"));
+				counter++;
+				if (counter >= 100)
+				{
+					break;
+				}
+				String queryString = resultSet.getString("title");
+				StringBuilder cleanedString = new StringBuilder(queryString.length());
+				for (int i = 0; i != queryString.length(); i++)
+				{
+					char c = queryString.charAt(i);
+					if (Character.isAlphabetic(c) || Character.isSpaceChar(c))
+					{
+						cleanedString.append(c);
+					}
+				}
+				Query query = queryParser.parse(cleanedString.toString());
 				indexSearcher.search(query, 1000);
 			}
 		} catch (SQLException | ParseException ex)
