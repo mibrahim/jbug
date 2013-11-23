@@ -10,15 +10,15 @@ var bugId;
 
 // Constants
 var STATUS =
-[ "<i class='icon-circle-blank' style='color:red;' title='Open'></i>",
-        "<i class='icon-play' style='color:blue;' title='In progress'></i>",
-        "<i class='icon-pause' style='color:brown;' title='Paused'></i>",
-        "<i class='icon-ok' style='color:green;' title='Completed'></i>" ];
+		["<i class='icon-circle-blank' style='color:red;' title='Open'></i>",
+			"<i class='icon-play' style='color:blue;' title='In progress'></i>",
+			"<i class='icon-pause' style='color:brown;' title='Paused'></i>",
+			"<i class='icon-ok' style='color:green;' title='Completed'></i>"];
 
 var PRIORITY =
-[ "<i class='icon-arrow-up' style='color:red;' title='High'></i>",
-        "<i class='icon-minus' style='color:green;' title='Medium'></i>",
-        "<i class='icon-arrow-down' style='color:blue;' title='Low'></i>" ];
+		["<i class='icon-arrow-up' style='color:red;' title='High'></i>",
+			"<i class='icon-minus' style='color:green;' title='Medium'></i>",
+			"<i class='icon-arrow-down' style='color:blue;' title='Low'></i>"];
 
 // Location update detector
 var oldLocation = location.href;
@@ -36,7 +36,7 @@ function extractURLVariables()
 	var prmarr = document.location.hash.substr(1).split("&");
 	params = {};
 
-	for ( var i = 0; i < prmarr.length; i++)
+	for (var i = 0; i < prmarr.length; i++)
 	{
 		var tmparr = prmarr[i].split("=");
 		params[tmparr[0]] = tmparr[1];
@@ -76,8 +76,8 @@ function getUserGravatarImg(email, size)
 	if (size === null || size === undefined)
 		size = 28;
 	return "<img class='usergravatar' align='top' style='width:" + size
-	        + "px;height:" + size + "px;' src='http://www.gravatar.com/avatar/"
-	        + $.md5(email) + "?d=wavatar&s=" + size + "'/>";
+			+ "px;height:" + size + "px;' src='http://www.gravatar.com/avatar/"
+			+ $.md5(email) + "?d=wavatar&s=" + size + "'/>";
 }
 
 function setMainContentHeight()
@@ -88,7 +88,7 @@ function setMainContentHeight()
 		winH = document.body.offsetHeight;
 	}
 	if (document.compatMode === 'CSS1Compat' && document.documentElement
-	        && document.documentElement.offsetWidth)
+			&& document.documentElement.offsetWidth)
 	{
 		winW = document.documentElement.offsetWidth;
 		winH = document.documentElement.offsetHeight;
@@ -107,11 +107,11 @@ function setMainContentHeight()
 function updateBugStatusBar()
 {
 	$.ajax(
-	{
-	    url : "data.jsp?get=openbugcount",
-	    context : document.body,
-	    async : true
-	}).done(function(data)
+			{
+				url: "data.jsp?get=openbugcount",
+				context: document.body,
+				async: true
+			}).done(function(data)
 	{
 		$("#openbugs").html(data);
 	});
@@ -122,23 +122,49 @@ var buglist = "";
 function updateOpenBugsList()
 {
 	$.ajax(
-	{
-	    url : "data.jsp?get=openbugids",
-	    context : document.body,
-	    async : false
-	}).done(function(data)
-	{
-		bugList = data;
-	});
+			{
+				url: "data.jsp?get=openbugids",
+				context: document.body,
+				async: false
+			}
+	).done(
+			function(data)
+			{
+				bugList = data;
+			}
+	);
+}
+
+function search()
+{
+	if ($("#searchbar").val().trim().length === 0)
+		showOpenBugs();
+
+	$.ajax(
+			{
+				url: "data.jsp?get=searchbugs&q=" + $("#searchbar").val(),
+				context: document.body,
+				async: false
+			}
+	).done(
+			function(data)
+			{
+				bugList = data;
+				currentPage = 1;
+				console.log("bugList=" + bugList);
+				showCurrentPage();
+			}
+	);
+
 }
 
 function showOpenBugs()
 {
 	$.ajax(
-	{
-	    url : "data.jsp?get=openbugids",
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=openbugids",
+				context: document.body
+			}).done(function(data)
 	{
 		bugList = data;
 		showCurrentPage();
@@ -148,8 +174,8 @@ function showOpenBugs()
 function pageLink(page, pageText, isCurrent)
 {
 	html = " <a href='#do=bugpage&page=" + page + "' class='btn "
-	        + ((isCurrent === true) ? "btn-yellow" : "btn-red") + "'>"
-	        + pageText + "</a>";
+			+ ((isCurrent === true) ? "btn-yellow" : "btn-red") + "'>"
+			+ pageText + "</a>";
 	return html;
 }
 
@@ -169,7 +195,7 @@ function showCurrentPage()
 			currentPage = undefined;
 		if (params['bugid'] !== undefined)
 			bugId = (params['bugid'] !== "new") ? parseInt(params['bugid'])
-			        : "new";
+					: "new";
 		else
 			bugId = undefined;
 	}
@@ -203,7 +229,7 @@ function showCurrentPage()
 function showCurrentBugPage()
 {
 	if (bugList === undefined || bugList.length === 0
-	        || bugList === "Not found")
+			|| bugList === "Not found")
 		return;
 
 	bugs = bugList.split(",");
@@ -217,10 +243,10 @@ function showCurrentBugPage()
 	navBar += pageLink(1, "<i class='icon-fast-backward'></i>", false);
 	start = 0;
 	regions =
-	[
-	[ 1, 3 ],
-	[ currentPage - 3, currentPage + 3 ],
-	[ nPages - 2, nPages ] ];
+			[
+				[1, 3],
+				[currentPage - 3, currentPage + 3],
+				[nPages - 2, nPages]];
 
 	for (z = 0; z < regions.length - 1; z++)
 	{
@@ -257,11 +283,11 @@ function showCurrentBugPage()
 	}
 
 	$.ajax(
-	{
-	    url : "data.jsp?get=bugssummaries&for=" + ids,
-	    async : false,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=bugssummaries&for=" + ids,
+				async: false,
+				context: document.body
+			}).done(function(data)
 	{
 		json = data;
 	});
@@ -280,7 +306,7 @@ function showCurrentBugPage()
 			if (newbugs[i].BUG_ID === bugs[j])
 			{
 				table += getBugSummaryRow(j + firstBug + 1, newbugs[i],
-				        ((j % 2) === 0) ? "buglight" : "bugdark");
+						((j % 2) === 0) ? "buglight" : "bugdark");
 				break;
 			}
 		}
@@ -295,13 +321,13 @@ function getBugSummaryRow(num, bug, color)
 	if (color === undefined)
 		color = "white";
 	row = "<tr class='bugsummaryrow " + color + "'>" + "<td><b>" + num
-	        + "</b></td>" + "<td>" + getUserGravatarImg(bug.ASSIGNED_TO)
-	        + "</td>" + "<td>" + STATUS[parseInt(bug.STATUS)]
-	        + PRIORITY[parseInt(bug.PRIORITY)] + "</td>"
-	        + "<td class='bugsummarydesctd' style='max-width:" + (winW - 170)
-	        + "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>"
-	        + bug.TITLE + "</a></b><span class='summarydesc'> - "
-	        + bug.DESCRIPTION + "</span></td>";
+			+ "</b></td>" + "<td>" + getUserGravatarImg(bug.ASSIGNED_TO)
+			+ "</td>" + "<td>" + STATUS[parseInt(bug.STATUS)]
+			+ PRIORITY[parseInt(bug.PRIORITY)] + "</td>"
+			+ "<td class='bugsummarydesctd' style='max-width:" + (winW - 170)
+			+ "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>"
+			+ bug.TITLE + "</a></b><span class='summarydesc'> - "
+			+ bug.DESCRIPTION + "</span></td>";
 
 	row += "</tr>";
 	return row;
@@ -310,51 +336,51 @@ function getBugSummaryRow(num, bug, color)
 function showBugDetails()
 {
 	$.ajax(
-	{
-	    url : "data.jsp?get=bug&for=" + bugId,
-	    async : false,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=bug&for=" + bugId,
+				async: false,
+				context: document.body
+			}).done(function(data)
 	{
 		bug = JSON.parse(data);
 	});
 
 	html = "<div style='float:right;'><a href='#do=bugedit&bugid="
-	        + bug.BUG_ID
-	        + "' style='text-decoration:none;'>"
-	        + "<i class='icon-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
+			+ bug.BUG_ID
+			+ "' style='text-decoration:none;'>"
+			+ "<i class='icon-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
 	html += "<div style='float:right;'><a href='#do=bugdelete&bugid="
-	        + bug.BUG_ID
-	        + "' style='text-decoration:none;'>"
-	        + "<i class='icon-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
+			+ bug.BUG_ID
+			+ "' style='text-decoration:none;'>"
+			+ "<i class='icon-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
 	html += "<table>";
 	html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64)
-	        + "</td>";
+			+ "</td>";
 	html += "<td><h1>" + bug.TITLE + "</h1>";
 
 	html += PRIORITY[parseInt(bug.PRIORITY)] + " ";
 
 	easiness =
-	[ "Easy", "Medium", "Hard" ];
+			["Easy", "Medium", "Hard"];
 
 	html += STATUS[parseInt(bug.STATUS)];
 	html += " " + easiness[parseInt(bug.EASINESS)];
 	html += " <a href=''>" + bug.PRODUCT + "</a> <a href=''>" + bug.COMPONENT
-	        + "</a>";
+			+ "</a>";
 	html += "</td></tr></table><br/>";
 	html += "<div class='bugdescription'><pre>" + bug.DESCRIPTION
-	        + "</pre></div>";
+			+ "</pre></div>";
 	$("#main").html(html);
 }
 
 function yesdeletebug(bugid)
 {
 	$.ajax(
-	{
-	    url : "data.jsp?get=deletebug&bugid=" + bugid,
-	    async : false,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=deletebug&bugid=" + bugid,
+				async: false,
+				context: document.body
+			}).done(function(data)
 	{
 		window.location = '';
 	});
@@ -363,11 +389,11 @@ function yesdeletebug(bugid)
 function bugDelete()
 {
 	$.ajax(
-	{
-	    url : "data.jsp?get=bug&for=" + bugId,
-	    async : false,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=bug&for=" + bugId,
+				async: false,
+				context: document.body
+			}).done(function(data)
 	{
 		bug = JSON.parse(data);
 	});
@@ -375,35 +401,35 @@ function bugDelete()
 	html = "<h1>About to delete the following bug. Are you sure?</h1>";
 
 	html += "<a href='#do=bugdetails&bugid="
-	        + bug.BUG_ID
-	        + "' class='btn btn-green'>No</a> <a class='btn btn-red' onclick='yesdeletebug("
-	        + bug.BUG_ID + ")'>Yes</a><br/></br>";
+			+ bug.BUG_ID
+			+ "' class='btn btn-green'>No</a> <a class='btn btn-red' onclick='yesdeletebug("
+			+ bug.BUG_ID + ")'>Yes</a><br/></br>";
 
 	html += "<div style='float:right;'><a href='#do=bugedit&bugid="
-	        + bug.BUG_ID
-	        + "' style='text-decoration:none;'>"
-	        + "<i class='icon-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
+			+ bug.BUG_ID
+			+ "' style='text-decoration:none;'>"
+			+ "<i class='icon-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
 	html += "<div style='float:right;'><a href='#do=bugdelete&bugid="
-	        + bug.BUG_ID
-	        + "' style='text-decoration:none;'>"
-	        + "<i class='icon-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
+			+ bug.BUG_ID
+			+ "' style='text-decoration:none;'>"
+			+ "<i class='icon-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
 	html += "<table>";
 	html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64)
-	        + "</td>";
+			+ "</td>";
 	html += "<td><h1>" + bug.TITLE + "</h1>";
 
 	html += PRIORITY[parseInt(bug.PRIORITY)] + " ";
 
 	easiness =
-	[ "Easy", "Medium", "Hard" ];
+			["Easy", "Medium", "Hard"];
 
 	html += STATUS[parseInt(bug.STATUS)];
 	html += " " + easiness[parseInt(bug.EASINESS)];
 	html += " <a href=''>" + bug.PRODUCT + "</a> <a href=''>" + bug.COMPONENT
-	        + "</a>";
+			+ "</a>";
 	html += "</td></tr></table><br/>";
 	html += "<div class='bugdescription'><pre>" + bug.DESCRIPTION
-	        + "</pre></div>";
+			+ "</pre></div>";
 	$("#main").html(html);
 }
 
@@ -417,11 +443,11 @@ function bugEdit()
 	if (bugId !== "new")
 	{
 		$.ajax(
-		{
-		    url : "data.jsp?get=bug&for=" + bugId,
-		    async : false,
-		    context : document.body
-		}).done(function(data)
+				{
+					url: "data.jsp?get=bug&for=" + bugId,
+					async: false,
+					context: document.body
+				}).done(function(data)
 		{
 			bug = JSON.parse(data);
 		});
@@ -447,66 +473,66 @@ function bugEdit()
 
 	html = "<table>";
 	html += "<tr><td class='fieldname'>Bug ID:</td><td><input type='text' class='txtfield' id='bugid' value='"
-	        + bugId + "' readonly/></td></tr>";
+			+ bugId + "' readonly/></td></tr>";
 	html += "<tr><td class='fieldname'>Title:</td><td><input type='text' class='txtfield' name='title' id='title' value='"
-	        + bug.TITLE + "'/></td></tr>";
+			+ bug.TITLE + "'/></td></tr>";
 	html += "<tr><td class='fieldname' valign='top'>Description:</td><td><textarea rows='5' class='txtarea' name='description' id='description'>"
-	        + bug.DESCRIPTION + "</textarea></td></tr>";
+			+ bug.DESCRIPTION + "</textarea></td></tr>";
 	html += "<tr><td class='fieldname'>Reporter:</td><td><input type='text' class='txtfield' name='reporter' id='reporter' value='"
-	        + bug.REPORTER + "'/></td></tr>";
+			+ bug.REPORTER + "'/></td></tr>";
 	html += "<tr><td class='fieldname'>Assigned to:</td><td><input type='text' class='txtfield' name='assigned_to' id='assigned_to' value='"
-	        + bug.ASSIGNED_TO + "'/></td></tr>";
+			+ bug.ASSIGNED_TO + "'/></td></tr>";
 	html += "<tr><td class='fieldname'>Easiness:</td><td>\n\
     <input type='radio' name='easiness' value='0' "
-	        + ((bug.EASINESS === "0") ? "checked" : "")
-	        + ">Easy\n\
+			+ ((bug.EASINESS === "0") ? "checked" : "")
+			+ ">Easy\n\
     <input type='radio' name='easiness' value='1' "
-	        + ((bug.EASINESS === "1") ? "checked" : "")
-	        + ">Medium\n\
+			+ ((bug.EASINESS === "1") ? "checked" : "")
+			+ ">Medium\n\
     <input type='radio' name='easiness' value='2' "
-	        + ((bug.EASINESS === "2") ? "checked" : "")
-	        + ">Hard\n\
+			+ ((bug.EASINESS === "2") ? "checked" : "")
+			+ ">Hard\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Priority:</td><td>\n\
     <input type='radio' name='priority' value='0' "
-	        + ((bug.PRIORITY === "0") ? "checked" : "")
-	        + ">High\n\
+			+ ((bug.PRIORITY === "0") ? "checked" : "")
+			+ ">High\n\
     <input type='radio' name='priority' value='1' "
-	        + ((bug.PRIORITY === "1") ? "checked" : "")
-	        + ">Medium\n\
+			+ ((bug.PRIORITY === "1") ? "checked" : "")
+			+ ">Medium\n\
     <input type='radio' name='priority' value='2' "
-	        + ((bug.PRIORITY === "2") ? "checked" : "")
-	        + ">Low\n\
+			+ ((bug.PRIORITY === "2") ? "checked" : "")
+			+ ">Low\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Status:</td><td>\n\
     <input type='radio' name='status' value='0' "
-	        + ((bug.STATUS === "0") ? "checked" : "")
-	        + ">Open\n\
+			+ ((bug.STATUS === "0") ? "checked" : "")
+			+ ">Open\n\
     <input type='radio' name='status' value='1' "
-	        + ((bug.STATUS === "1") ? "checked" : "")
-	        + ">In progress\n\
+			+ ((bug.STATUS === "1") ? "checked" : "")
+			+ ">In progress\n\
     <input type='radio' name='status' value='2' "
-	        + ((bug.STATUS === "2") ? "checked" : "")
-	        + ">Paused\n\
+			+ ((bug.STATUS === "2") ? "checked" : "")
+			+ ">Paused\n\
     <input type='radio' name='status' value='3' "
-	        + ((bug.STATUS === "3") ? "checked" : "")
-	        + ">Closed\
+			+ ((bug.STATUS === "3") ? "checked" : "")
+			+ ">Closed\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Product:</td><td>\n\
     <input type='text' class='txtfield' id='product' name='product' id='product' value='"
-	        + bug.PRODUCT + "'>\n\
+			+ bug.PRODUCT + "'>\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Component:</td><td>\n\
     <input type='text' class='txtfield' id='component' name='component' id='component' value='"
-	        + bug.COMPONENT + "'>\n\
+			+ bug.COMPONENT + "'>\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Version:</td><td>\n\
     <input type='text' class='txtfield' id='version' name='version' id='version' value='"
-	        + bug.VERSION + "'>\n\
+			+ bug.VERSION + "'>\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Target milestone:</td><td>\n\
     <input type='text' class='txtfield' id='target_milestone' name='target_milestone' id='target_milestone' value='"
-	        + bug.TARGET_MILESTONE + "'>\n\
+			+ bug.TARGET_MILESTONE + "'>\n\
     </td></tr>";
 
 	html += "<tr><td class='fieldname' colspan='2'><center><a href='javascript:saveBug()' class='btn btn-blue'>Save</a></center></td></tr>";
@@ -523,11 +549,11 @@ function bugEdit()
 
 	// Autocomplete the reporters and the assigned_to
 	$.ajax(
-	{
-	    url : "data.jsp?get=users",
-	    async : true,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=users",
+				async: true,
+				context: document.body
+			}).done(function(data)
 	{
 
 		if (data === undefined || data.indexOf(jBugUser) === -1)
@@ -541,85 +567,85 @@ function bugEdit()
 		{
 			eval("var ausers=[" + data + "];");
 			$("#reporter").autocomplete(
-			{
-				source : ausers
-			});
+					{
+						source: ausers
+					});
 			$("#assigned_to").autocomplete(
-			{
-				source : ausers
-			});
+					{
+						source: ausers
+					});
 		}
 	});
 
 	// Autocomplete the products
 	$.ajax(
-	{
-	    url : "data.jsp?get=products",
-	    async : true,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=products",
+				async: true,
+				context: document.body
+			}).done(function(data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
 			eval("var aproducts=[" + data + "];");
 			$("#product").autocomplete(
-			{
-				source : aproducts
-			});
+					{
+						source: aproducts
+					});
 		}
 	});
 
 	// Autocomplete the component
 	$.ajax(
-	{
-	    url : "data.jsp?get=components",
-	    async : true,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=components",
+				async: true,
+				context: document.body
+			}).done(function(data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
 			eval("var acomponents=[" + data + "];");
 			$("#component").autocomplete(
-			{
-				source : acomponents
-			});
+					{
+						source: acomponents
+					});
 		}
 	});
 
 	// Autocomplete the versions
 	$.ajax(
-	{
-	    url : "data.jsp?get=versions",
-	    async : true,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=versions",
+				async: true,
+				context: document.body
+			}).done(function(data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
 			eval("var aversions=[" + data + "];");
 			$("#version").autocomplete(
-			{
-				source : aversions
-			});
+					{
+						source: aversions
+					});
 		}
 	});
 
 	// Autocomplete the target_milestone
 	$.ajax(
-	{
-	    url : "data.jsp?get=target_milestones",
-	    async : true,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=target_milestones",
+				async: true,
+				context: document.body
+			}).done(function(data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
 			eval("var atarget_milestone=[" + data + "];");
 			$("#target_milestone").autocomplete(
-			{
-				source : atarget_milestone
-			});
+					{
+						source: atarget_milestone
+					});
 		}
 	});
 }
@@ -656,11 +682,11 @@ function saveBug()
 
 	// Save the bug
 	$.ajax(
-	{
-	    url : url,
-	    async : true,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: url,
+				async: true,
+				context: document.body
+			}).done(function(data)
 	{
 		updateBugStatusBar();
 		updateOpenBugsList();
@@ -678,12 +704,12 @@ function svgDoubleProgressBar(completed, inprogress)
 
 	// Draw the completed
 	svg += "<rect x='0' y='0' width='" + Math.floor(2 * completed)
-	        + "px' height='32px' style='fill:blue;stroke:none'/>";
+			+ "px' height='32px' style='fill:blue;stroke:none'/>";
 
 	// Draw the inprogress
 	svg += "<rect x='" + Math.floor(2 * completed) + "' y='0' width='"
-	        + Math.floor(2 * inprogress)
-	        + "px' height='32px' style='fill:green;stroke:none'/>";
+			+ Math.floor(2 * inprogress)
+			+ "px' height='32px' style='fill:green;stroke:none'/>";
 
 	// Draw the border and close the svg
 	svg += "<rect x='0' y='0' width='200px' height='32px' style='fill:none;stroke:grey;stroke-width:3'/>";
@@ -696,13 +722,13 @@ function renderMilestoneProgressBar(product, milestone)
 {
 	var myhtml = "";
 	dataurl = "data.jsp?get=producttarget_milestonebugs&product=" + product
-	        + "&target_milestone=" + milestone;
+			+ "&target_milestone=" + milestone;
 	$.ajax(
-	{
-	    url : dataurl,
-	    async : false,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: dataurl,
+				async: false,
+				context: document.body
+			}).done(function(data)
 	{
 		// Count which ones are complete, and which are open,inproress,paused
 		bugs = (data + ",").split(",");
@@ -717,16 +743,16 @@ function renderMilestoneProgressBar(product, milestone)
 		var zeroes = "00000";
 		var bugid = zeroes.substring(status[0].length) + status[0];
 		var thisBug = "<a href='#do=bugdetails&bugid=" + status[0] + "'>["
-		        + bugid + "]</a> ";
+				+ bugid + "]</a> ";
 
 		// Get the bug summary
 		var bugdetails;
 		$.ajax(
-		{
-		    url : "data.jsp?get=bug&for=" + status[0],
-		    async : false,
-		    context : document.body
-		}).done(function(data)
+				{
+					url: "data.jsp?get=bug&for=" + status[0],
+					async: false,
+					context: document.body
+				}).done(function(data)
 		{
 			// Count which ones are complete, and which are
 			// open,inproress,paused
@@ -744,7 +770,7 @@ function renderMilestoneProgressBar(product, milestone)
 				break;
 			case '3':
 				thisBug = "<span style='text-decoration: line-through;'>"
-				        + thisBug + "</span>";
+						+ thisBug + "</span>";
 				complete++;
 				break;
 		}
@@ -752,9 +778,9 @@ function renderMilestoneProgressBar(product, milestone)
 	}
 	total = open + inprogress + complete;
 	svg = svgDoubleProgressBar(100.0 * complete / total, 100.0 * inprogress
-	        / total);
+			/ total);
 	myhtml += svg + "<br/><b>" + open + " open, " + inprogress
-	        + " inprogress, " + complete + " complete</b><br/>" + buglist;
+			+ " inprogress, " + complete + " complete</b><br/>" + buglist;
 	return myhtml;
 }
 
@@ -764,23 +790,23 @@ function viewProductRoadmap(product)
 	var html = "<h1>" + product + "</h1>";
 	html += "<div style='font-family: Droid Sans Mono;'>";
 	$.ajax(
-	{
-	    url : "data.jsp?get=producttarget_milestones&product=" + product,
-	    async : false,
-	    context : document.body
-	})
-	        .done(
-	                function(data)
-	                {
-		                var milestones = data.split(",");
-		                for (a = 0; a < milestones.length; a++)
-		                {
-			                html += milestones[a]
-			                        + "<br/>"
-			                        + renderMilestoneProgressBar(product,
-			                                milestones[a]) + "<br/>";
-		                }
-	                });
+			{
+				url: "data.jsp?get=producttarget_milestones&product=" + product,
+				async: false,
+				context: document.body
+			})
+			.done(
+					function(data)
+					{
+						var milestones = data.split(",");
+						for (a = 0; a < milestones.length; a++)
+						{
+							html += milestones[a]
+									+ "<br/>"
+									+ renderMilestoneProgressBar(product,
+											milestones[a]) + "<br/>";
+						}
+					});
 	html += "</div>";
 
 	$("#main").html(html);
@@ -798,11 +824,11 @@ function roadMap()
 
 	// Get the products
 	$.ajax(
-	{
-	    url : "data.jsp?get=products",
-	    async : false,
-	    context : document.body
-	}).done(function(data)
+			{
+				url: "data.jsp?get=products",
+				async: false,
+				context: document.body
+			}).done(function(data)
 	{
 		products = data.split(",");
 		products.sort();
@@ -814,7 +840,7 @@ function roadMap()
 	{
 		products[i] = products[i].substring(1, products[i].length - 1);
 		html += "<li><a href='#do=roadmap&product=" + products[i] + "'>"
-		        + products[i] + "</a>";
+				+ products[i] + "</a>";
 	}
 	html += "</ol>";
 

@@ -7,9 +7,12 @@ package com.qahit.jbug;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.queryparser.classic.QueryParser;
 
 public class Main
 {
@@ -155,6 +158,28 @@ public class Main
 			}
 			return b.toString();
 		}
+	}
+
+	static String searchBugs(HttpServletRequest request, SQL sql) throws SQLException
+	{
+		String searchFilter = request.getParameter("q");
+		if (searchFilter == null || searchFilter.trim().length() == 0)
+		{
+			ResultSet resultSet = sql.query("select bug_id from bugs");
+			StringBuilder b = new StringBuilder(256);
+			while (resultSet.next())
+			{
+				if (b.length() > 0)
+				{
+					b.append(",");
+				}
+				b.append(resultSet.getInt("bug_id"));
+			}
+			return b.toString();
+		}
+
+		ArrayList<String> bugIds = LuceneManager.search(searchFilter, 1000, QueryParser.Operator.OR);
+		return StringUtils.join(bugIds, ",");
 	}
 
 	/**
@@ -459,10 +484,12 @@ public class Main
 					return getBug(request, sql);
 				case "bugs":
 					return getBugs(request, sql);
-				case "bugssummaries":
-					return getBugsSummaries(request, sql);
 				case "bugids":
 					return getBugIds(request, sql);
+				case "bugssummaries":
+					return getBugsSummaries(request, sql);
+				case "searchbugs":
+					return searchBugs(request, sql);
 				case "producttarget_milestones":
 					return getProductTargetMilestones(request, sql);
 				case "producttarget_milestonebugs":

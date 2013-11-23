@@ -94,7 +94,7 @@ public class LuceneManager extends Thread
 					String assigned_to = result.getString("assigned_to");
 					String status = "" + Bug.Status.values()[result.getInt("status")];
 					String title = result.getString("title");
-					String comments = result.getClob("comments_json").toString();
+					String comments = result.getClob("comments_json") != null ? result.getClob("comments_json").toString() : "";
 					String priority = "" + Bug.Priorities.values()[result.getInt("priority")];
 					String description = result.getString("description");
 					String product = result.getString("product");
@@ -106,7 +106,7 @@ public class LuceneManager extends Thread
 
 					addBugToIndex(bug_id, assigned_to, status, title, comments, priority, description, product, reporter, version, component, target_milestone, easiness);
 
-					result.updateInt("indexed", 1);
+					sql.queryNoRes("update bugs set indexed=1 where bug_id=" + bug_id);
 				}
 			} catch (SQLException | IOException ex)
 			{
@@ -114,6 +114,7 @@ public class LuceneManager extends Thread
 			}
 			try
 			{
+				indexWriter.commit();
 				searcherManager.maybeRefresh();
 			} catch (IOException ex)
 			{
@@ -151,7 +152,7 @@ public class LuceneManager extends Thread
 				{
 					"easiness", "targetmilestone", "version", "component",
 					"reporter", "product", "description", "comments",
-					"title", "status", "assignedto", "bug_id",
+					"title", "status", "assignedto", "bug_id", "priority"
 				},
 				analyzer);
 			queryParser.setDefaultOperator(defaultOperator);
