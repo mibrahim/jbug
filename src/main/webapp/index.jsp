@@ -5,33 +5,31 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JBug</title>
-	<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-	<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+
+        <script src="http://code.jquery.com/jquery-2.0.3.js"></script>
+        <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
         <script src="js/jquery.cookie.js"></script>
         <script src="js/jquery.md5.js"></script>
         <script src="js/main.js"></script>
-        <link rel="stylesheet" href="css/jbug.css"/>
-        <link rel="stylesheet" href="css/forms.css"/>
-        <link rel="stylesheet" href="css/main.css"/>
-        <link rel="stylesheet" href="css/font-awesome.css"/>
-        
-        <!--  Bootstrap -->
-        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"/>
-        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-        
-        <!-- Font awesome -->
-        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
     </head>
     <body onresize="setMainContentHeight();">
         <div id="full">
             <jsp:include page="header.jsp"></jsp:include>
             <div id="main" class="main"></div>
             <script type="text/javascript">
-		checkUser();
-		setMainContentHeight();
-		updateBugStatusBar();
-		showOpenBugs();
+                checkUser();
+                setMainContentHeight();
+                updateBugStatusBar();
+                showOpenBugs();
             </script>
         </div>
     </body>
