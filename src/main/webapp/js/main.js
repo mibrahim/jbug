@@ -62,7 +62,7 @@ function getUserEmail()
 	if (jBugUser === null)
 		jBugUser = "";
 	jBugUser = prompt("What's your email?", window.jBugUser);
-	$.cookie("jbug.useremail", jBugUser);
+	$.cookie("jbug.useremail", jBugUser, {expires: 30});
 	updateUserGravatar();
 }
 
