@@ -1,4 +1,5 @@
-<nav class="navbar navbar-default" role="navigation">
+
+<div class="navbar navbar-default" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -18,11 +19,11 @@
             <li><a><b>Open Bugs:</b> <span id="openbugs" class="badge"></span></a></li>
             <li><a id="grv" href="javascript:getUserEmail();"></a></li>
         </ul>
-        <form class="navbar-form navbar-left" role="search">
+        <form onsubmit="return search();" id='searchform' class="navbar-form navbar-right" role="search">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
+                <input type="text" id="searchbar" name="searchbar" class="form-control" placeholder="Search">
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
+			<a id='searchbutton' href="javascript:search()" class="btn btn-primary">&Gt;</a>
         </form>
     </div><!-- /.navbar-collapse -->
-</nav>
+</div>

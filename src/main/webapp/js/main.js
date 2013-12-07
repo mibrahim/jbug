@@ -10,15 +10,15 @@ var bugId;
 
 // Constants
 var STATUS =
-	["<i class='icon-circle-blank' style='color:red;' title='Open'></i>",
-		"<i class='icon-play' style='color:blue;' title='In progress'></i>",
-		"<i class='icon-pause' style='color:brown;' title='Paused'></i>",
-		"<i class='icon-ok' style='color:green;' title='Completed'></i>"];
+	["<i class='fa fa-circle-blank' style='color:red;' title='Open'></i>",
+		"<i class='fa fa-play' style='color:blue;' title='In progress'></i>",
+		"<i class='fa fa-pause' style='color:brown;' title='Paused'></i>",
+		"<i class='fa fa-ok' style='color:green;' title='Completed'></i>"];
 
 var PRIORITY =
-	["<i class='icon-arrow-up' style='color:red;' title='High'></i>",
-		"<i class='icon-minus' style='color:green;' title='Medium'></i>",
-		"<i class='icon-arrow-down' style='color:blue;' title='Low'></i>"];
+	["<i class='fa fa-arrow-up' style='color:red;' title='High'></i>",
+		"<i class='fa fa-minus' style='color:green;' title='Medium'></i>",
+		"<i class='fa fa-arrow-down' style='color:blue;' title='Low'></i>"];
 
 // Location update detector
 var oldLocation = location.href;
@@ -152,10 +152,12 @@ function search()
 			bugList = data;
 			currentPage = 1;
 			console.log("bugList=" + bugList);
+			window.location = "#";
 			showCurrentPage();
 		}
 	);
 
+	return false;
 }
 
 function showOpenBugs()
@@ -298,7 +300,11 @@ function showCurrentBugPage()
 	}
 
 	newbugs = JSON.parse(json).bugs;
-	table = "<table width='100%'><tr class='titlerow'><td style='width:28px;'>#</td><td style='width:28px;'>@</td><td>Pri</td><td>Summary</td></tr>";
+	table = "<table width='100%'><tr style='background:#eee;'>";
+	table += "<td style='width:28px;'><b>#</b></td>";
+	table += "<td style='width:28px;'><b>@</b></td>";
+	table += "<td style='width:32px;'><b>Pri</b></td><td><b>Summary</b></td></tr>";
+
 	for (j = firstBug; j < bugs.length && j < firstBug + pageSize; j++)
 	{
 		for (i = 0; i !== newbugs.length; i++)
@@ -324,8 +330,7 @@ function getBugSummaryRow(num, bug, color)
 		+ "</b></td>" + "<td>" + getUserGravatarImg(bug.ASSIGNED_TO)
 		+ "</td>" + "<td>" + STATUS[parseInt(bug.STATUS)]
 		+ PRIORITY[parseInt(bug.PRIORITY)] + "</td>"
-		+ "<td class='bugsummarydesctd' style='max-width:" + (winW - 170)
-		+ "px'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>"
+		+ "<td class='bugsummarydesctd'><b><a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>"
 		+ bug.TITLE + "</a></b><span class='summarydesc'> - "
 		+ bug.DESCRIPTION + "</span></td>";
 
@@ -348,15 +353,15 @@ function showBugDetails()
 	html = "<div style='float:right;'><a href='#do=bugedit&bugid="
 		+ bug.BUG_ID
 		+ "' style='text-decoration:none;'>"
-		+ "<i class='icon-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
+		+ "<i class='fa fa-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
 	html += "<div style='float:right;'><a href='#do=bugdelete&bugid="
 		+ bug.BUG_ID
 		+ "' style='text-decoration:none;'>"
-		+ "<i class='icon-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
+		+ "<i class='fa fa-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
 	html += "<table>";
 	html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64)
 		+ "</td>";
-	html += "<td><h1>" + bug.TITLE + "</h1>";
+	html += "<td><h1>" + renderBugTitle(bug) + "</h1>";
 
 	html += PRIORITY[parseInt(bug.PRIORITY)] + " ";
 
@@ -368,9 +373,37 @@ function showBugDetails()
 	html += " <a href=''>" + bug.PRODUCT + "</a> <a href=''>" + bug.COMPONENT
 		+ "</a>";
 	html += "</td></tr></table><br/>";
-	html += "<div class='bugdescription'><pre>" + bug.DESCRIPTION
-		+ "</pre></div>";
+	html += "<div class='container' style='width:100%;'>";
+	html += "<div class='row'>";
+	html += "<div class='col-md-6'><h3>Description:</h3>";
+	html += "<div class='bugdescription'>" + bug.DESCRIPTION
+		+ "</div>";
+	html += "</div>"; // col6
+	html += "<div class='col-md-6'>";
+	html += "<h3>Depends on (blocked by)</h3>";
+	html += "<h3>Blocks</h3>";
+	html += "</div>"; // col6
+	html += "</div>"; // Row
+	html += "</div>"; // Container
 	$("#main").html(html);
+}
+
+function renderBugTitle(bug)
+{
+	var title = "";
+	var lcTitle = bug.TITLE.toLowerCase();
+
+	if (lcTitle.indexOf("epic:") === 0)
+		title += "<span class='btn btn-warning'><i class='fa fa-globe'></i></span> ";
+	if (lcTitle.indexOf("story:") === 0)
+		title += "<span class='btn btn-warning'><i class='fa fa-list-alt'></i></span> ";
+	if (lcTitle.indexOf("task:") === 0)
+		title += "<span class='btn btn-warning'><i class='fa fa-gear'></i></span> ";
+	if (lcTitle.indexOf("subtask:") === 0)
+		title += "<span class='btn btn-warning'><i class='fa fa-gears'></i></span> ";
+
+	title += bug.TITLE;
+	return title;
 }
 
 function yesdeletebug(bugid)
@@ -408,11 +441,11 @@ function bugDelete()
 	html += "<div style='float:right;'><a href='#do=bugedit&bugid="
 		+ bug.BUG_ID
 		+ "' style='text-decoration:none;'>"
-		+ "<i class='icon-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
+		+ "<i class='fa fa-edit' style='font-size:3em;color:#aaa;'></i></a></div>";
 	html += "<div style='float:right;'><a href='#do=bugdelete&bugid="
 		+ bug.BUG_ID
 		+ "' style='text-decoration:none;'>"
-		+ "<i class='icon-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
+		+ "<i class='fa fa-trash' style='font-size:3em;color:#aaa;'></i></a> &nbsp;&nbsp;&nbsp;</div>";
 	html += "<table>";
 	html += "<tr><td width='92px'>" + getUserGravatarImg(bug.ASSIGNED_TO, 64)
 		+ "</td>";
@@ -471,16 +504,16 @@ function bugEdit()
 
 	}
 
-	html = "<table>";
-	html += "<tr><td class='fieldname'>Bug ID:</td><td><input type='text' class='txtfield' id='bugid' value='"
+	html = "<table style='width:100%;'>";
+	html += "<tr><td class='fieldname'>Bug ID:</td><td><input type='text' class='form-control' id='bugid' value='"
 		+ bugId + "' readonly/></td></tr>";
-	html += "<tr><td class='fieldname'>Title:</td><td><input type='text' class='txtfield' name='title' id='title' value='"
+	html += "<tr><td class='fieldname'>Title:</td><td><input type='text'  class='form-control' name='title' id='title' value='"
 		+ bug.TITLE + "'/></td></tr>";
-	html += "<tr><td class='fieldname' valign='top'>Description:</td><td><textarea rows='5' class='txtarea' name='description' id='description'>"
+	html += "<tr><td class='fieldname' valign='top'>Description:</td><td><textarea  style='min-width:100px;max-width200px;' class='form-control' rows='5' name='description' id='description'>"
 		+ bug.DESCRIPTION + "</textarea></td></tr>";
-	html += "<tr><td class='fieldname'>Reporter:</td><td><input type='text' class='txtfield' name='reporter' id='reporter' value='"
+	html += "<tr><td class='fieldname'>Reporter:</td><td><input type='text'  class='form-control' name='reporter' id='reporter' value='"
 		+ bug.REPORTER + "'/></td></tr>";
-	html += "<tr><td class='fieldname'>Assigned to:</td><td><input type='text' class='txtfield' name='assigned_to' id='assigned_to' value='"
+	html += "<tr><td class='fieldname'>Assigned to:</td><td><input type='text'  class='form-control'  name='assigned_to' id='assigned_to' value='"
 		+ bug.ASSIGNED_TO + "'/></td></tr>";
 	html += "<tr><td class='fieldname'>Easiness:</td><td>\n\
     <input type='radio' name='easiness' value='0' "
@@ -519,23 +552,23 @@ function bugEdit()
 		+ ">Closed\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Product:</td><td>\n\
-    <input type='text' class='txtfield' id='product' name='product' id='product' value='"
+    <input type='text' class='form-control' id='product' name='product' id='product' value='"
 		+ bug.PRODUCT + "'>\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Component:</td><td>\n\
-    <input type='text' class='txtfield' id='component' name='component' id='component' value='"
+    <input type='text' class='form-control' id='component' name='component' id='component' value='"
 		+ bug.COMPONENT + "'>\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Version:</td><td>\n\
-    <input type='text' class='txtfield' id='version' name='version' id='version' value='"
+    <input type='text' class='form-control' id='version' name='version' id='version' value='"
 		+ bug.VERSION + "'>\n\
     </td></tr>";
 	html += "<tr><td class='fieldname'>Target milestone:</td><td>\n\
-    <input type='text' class='txtfield' id='target_milestone' name='target_milestone' id='target_milestone' value='"
+    <input type='text' class='form-control' id='target_milestone' name='target_milestone' id='target_milestone' value='"
 		+ bug.TARGET_MILESTONE + "'>\n\
     </td></tr>";
 
-	html += "<tr><td class='fieldname' colspan='2'><center><a href='javascript:saveBug()' class='btn btn-blue'>Save</a></center></td></tr>";
+	html += "<tr><td class='fieldname' colspan='2'><center><a href='javascript:saveBug()' class='btn btn-primary'>Save</a></center></td></tr>";
 
 	html += "</table>";
 
@@ -777,8 +810,7 @@ function renderMilestoneProgressBar(product, milestone)
 		buglist += thisBug + "<br/>";
 	}
 	total = open + inprogress + complete;
-	svg = svgDoubleProgressBar(100.0 * complete / total, 100.0 * inprogress
-		/ total);
+	svg = svgDoubleProgressBar(100.0 * complete / total, 100.0 * inprogress / total);
 	myhtml += svg + "<br/><b>" + open + " open, " + inprogress
 		+ " inprogress, " + complete + " complete</b><br/>" + buglist;
 	return myhtml;
@@ -788,7 +820,7 @@ function viewProductRoadmap(product)
 {
 	// Get product milestones
 	var html = "<h1>" + product + "</h1>";
-	html += "<div style='font-family: Droid Sans Mono;'>";
+	html += "<div style='font-family: monospace;'>";
 	$.ajax(
 		{
 			url: "data.jsp?get=producttarget_milestones&product=" + product,
