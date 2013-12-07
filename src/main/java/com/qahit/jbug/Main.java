@@ -244,28 +244,24 @@ public class Main
 	 */
 	static String getBugs(HttpServletRequest request, SQL sql) throws SQLException
 	{
-		String pfor = request.getParameter("for");
+		String pfor = request.getParameter("for").trim();
+		if (pfor.length()==0) return "";
 		ResultSet rs = sql.query("select * from bugs where bug_id in (" + pfor + ")");
 		StringBuilder b = new StringBuilder(256);
+				b.append("{\"bugs\":[");
+				boolean first=true;
 		while (rs.next())
 		{
-			if (b.length() > 0)
+			if (!first)
 			{
 				b.append(",\n");
-			}
-			if (b.length() == 0)
+			} else
 			{
-				b.append("{\"bugs\":[");
+				first=false;
 			}
 			b.append(SQL.currentRowToJSON(rs));
 		}
-		if (b.length() == 0)
-		{
-			b.append("Not found");
-		} else
-		{
 			b.append("\n]}");
-		}
 		rs.close();
 		return b.toString();
 	}
@@ -494,6 +490,10 @@ public class Main
 					return getProductTargetMilestones(request, sql);
 				case "producttarget_milestonebugs":
 					return getProductTargetMilestoneBugs(request, sql);
+				case "getsubtasks":
+					return getSubtasks(request, sql);
+				case "getspertasks":
+					return getSupertasks(request, sql);
 
 				// Sets and updates
 				case "updatebug":
@@ -501,6 +501,12 @@ public class Main
 
 				case "deletebug":
 					return deleteBug(request, sql);
+
+				case "adddependency":
+					return addDependency(request, sql);
+
+				case "removedependency":
+					return removeDependency(request, sql);
 
 				default:
 					return "Unkown request: " + pget;
@@ -548,5 +554,59 @@ public class Main
 			b.append(rs.getString("target_milestone"));
 		}
 		return b.toString();
+	}
+
+	private static String getSubtasks(HttpServletRequest request, SQL sql) throws SQLException
+	{
+		String bugid = request.getParameter("for");
+		try(ResultSet rs=sql.query("select subtask from dependencies where supertask="+bugid))
+		{
+			StringBuilder b=new StringBuilder(256);
+			while(rs.next())
+			{
+				if (b.length()>0)
+					b.append(",");
+				b.append(rs.getInt("subtask"));
+			}
+			return b.toString();
+		}
+	}
+
+	private static String getSupertasks(HttpServletRequest request, SQL sql) throws SQLException
+	{
+		String bugid = request.getParameter("for");
+		try(ResultSet rs=sql.query("select subtask from dependencies where subtask="+bugid))
+		{
+			StringBuilder b=new StringBuilder(256);
+			while(rs.next())
+			{
+				if (b.length()>0)
+					b.append(",");
+				b.append(rs.getInt("supertask"));
+			}
+			return b.toString();
+		}
+	}
+
+	private static String addDependency(HttpServletRequest request, SQL sql) throws SQLException
+	{
+		String superTask = request.getParameter("supertask");
+		String subTask = request.getParameter("subtask");
+
+		if (!sql.queryNoRes("insert into dependencies(supertask,subtask) values("+superTask+","+subTask+")"))
+			return "OK";
+		else
+			return "FAIL";
+	}
+
+	private static String removeDependency(HttpServletRequest request, SQL sql) throws SQLException
+	{
+		String superTask = request.getParameter("supertask");
+		String subTask = request.getParameter("subtask");
+
+		if (!sql.queryNoRes("delete from dependencies where supertask="+superTask+" and subtask="+subTask))
+			return "OK";
+		else
+			return "FAIL";
 	}
 }

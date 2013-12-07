@@ -380,12 +380,24 @@ function showBugDetails()
 		+ "</div>";
 	html += "</div>"; // col6
 	html += "<div class='col-md-6'>";
-	html += "<h3>Depends on (blocked by)</h3>";
-	html += "<h3>Blocks</h3>";
+	html += "<h3>Blocked by:";
+	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addDependency,function(){})">+</span></h3>';
+	html += "<h3>Blocks:";
+	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addDependant,function(){})">+</span></h3>';
 	html += "</div>"; // col6
 	html += "</div>"; // Row
 	html += "</div>"; // Container
 	$("#main").html(html);
+}
+
+function addDependency(id)
+{
+	alert("id="+id);
+}
+
+function addDependant(id)
+{
+	alert("id="+id);
 }
 
 function renderBugTitle(bug)
@@ -878,4 +890,80 @@ function roadMap()
 	html += "</ol>";
 
 	$("#main").html(html);
+}
+
+var globalOnDone;
+
+function findBug(dtitle, onDone, onCancel)
+{
+	globalOnDone = onDone;
+
+	html = "<div class='input-group'>" +
+		"<input type='text' id='findbugkeywords' class='form-control'/>" +
+		"<span class='input-group-btn'><button class='btn btn-warning' onclick='findbugsearch()' type='button'>Search</button></span>" +
+		"</div>" +
+		"<div id='findbugrsults' style='height:150px;'></div>";
+
+	var dlg = $('<div class="modal">')
+		.attr({
+			id: 'findBug',
+			title: dtitle
+		})
+		.css({
+			'font-size': '12px'
+		})
+		.append(html)
+		.appendTo('body')
+		.dialog({
+			width: 600,
+			beforeclose: function(event, ui) {
+				$("#findBug").remove();
+			},
+			buttons: [{text: "Cancel", click: function() {
+						$(this).remove();
+						onCancel();
+					}}]
+		});
+	;
+}
+
+function findbugsearch()
+{
+	$.ajax(
+		{
+			url: "data.jsp?get=searchbugs&q=" + $("#findbugkeywords").val(),
+			context: document.body,
+			async: true
+		}
+	).done(
+		function(data)
+		{
+			$.ajax(
+				{
+					url: "data.jsp?get=bugs&for=" + data,
+					context: document.body,
+					async: true
+				}
+			).done(
+				function(data2)
+				{
+					newbugs = JSON.parse(data2).bugs;
+					html = "Found " + newbugs.length + " issues <br/>";
+					for (var i = 0; i < newbugs.length; i++)
+					{
+						if (i > 9)
+							break;
+						html += "<a href='javascript:sendBugId(" + newbugs[i].BUG_ID + ")'>" + renderBugTitle(newbugs[i]) + "</a><br/>";
+					}
+					$('#findbugrsults').html(html);
+				}
+			);
+		}
+	);
+}
+
+function sendBugId(id)
+{
+	$("#findBug").remove();
+	globalOnDone(id);
 }

@@ -264,6 +264,17 @@ public class LuceneManager extends Thread
 	{
 		File luceneIndexDirectory = new File("LuceneIndex");
 
+		if (!luceneIndexDirectory.exists())
+		{
+			try{
+				// Reset all indexed bugs
+				(new SQL()).queryNoRes("update bugs set indexed=0");
+			} catch(SQLException e)
+			{
+				throw new RuntimeException("SQL error !!!",e);
+			}
+		}
+
 		log.info("Opening index at: " + luceneIndexDirectory.getAbsolutePath());
 		log.info("Creating the index manager");
 		try
