@@ -78,7 +78,8 @@ public class LuceneManager extends Thread
 			try
 			{
 				sleep(interval);
-			} catch (InterruptedException ex)
+			}
+			catch (InterruptedException ex)
 			{
 				log.error("Interrupted while sleeping", ex);
 
@@ -108,7 +109,8 @@ public class LuceneManager extends Thread
 
 					sql.queryNoRes("update bugs set indexed=1 where bug_id=" + bug_id);
 				}
-			} catch (SQLException | IOException ex)
+			}
+			catch (SQLException | IOException ex)
 			{
 				java.util.logging.Logger.getLogger(LuceneManager.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -116,7 +118,8 @@ public class LuceneManager extends Thread
 			{
 				indexWriter.commit();
 				searcherManager.maybeRefresh();
-			} catch (IOException ex)
+			}
+			catch (IOException ex)
 			{
 				log.error("Error while refreshing", ex);
 			}
@@ -127,10 +130,12 @@ public class LuceneManager extends Thread
 			searcherManager.close();
 			indexWriter.close();
 			index.close();
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			log.error("Problems while attempting to close the index", e);
-		} finally
+		}
+		finally
 		{
 			LuceneManager.index = null;
 		}
@@ -166,15 +171,18 @@ public class LuceneManager extends Thread
 				result.add(doc.get("bug_id"));
 			}
 			return result;
-		} catch (IOException | ParseException ex)
+		}
+		catch (IOException | ParseException ex)
 		{
 			log.error("Error while searching", ex);
-		} finally
+		}
+		finally
 		{
 			try
 			{
 				searcherManager.release(indexSearcher);
-			} catch (IOException ex)
+			}
+			catch (IOException ex)
 			{
 				log.error("Error while releasing indexSearcher", ex);
 			}
@@ -190,7 +198,8 @@ public class LuceneManager extends Thread
 		{
 			Term term = new Term("bug_id", bugId);
 			indexWriter.deleteDocuments(term);
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			String err = "Error deleting key:" + bugId;
 			log.error(err, e);
@@ -218,7 +227,7 @@ public class LuceneManager extends Thread
 		status_.setBoost(5);
 		doc.add(status_);
 
-		Field title_ = new Field("title", title, TextField.TYPE_NOT_STORED);
+		Field title_ = new Field("title", title.replace(":", " "), TextField.TYPE_NOT_STORED);
 		status_.setBoost(20);
 		doc.add(title_);
 
@@ -266,12 +275,14 @@ public class LuceneManager extends Thread
 
 		if (!luceneIndexDirectory.exists())
 		{
-			try{
+			try
+			{
 				// Reset all indexed bugs
 				(new SQL()).queryNoRes("update bugs set indexed=0");
-			} catch(SQLException e)
+			}
+			catch (SQLException e)
 			{
-				throw new RuntimeException("SQL error !!!",e);
+				throw new RuntimeException("SQL error !!!", e);
 			}
 		}
 
@@ -280,7 +291,8 @@ public class LuceneManager extends Thread
 		try
 		{
 			index = new SimpleFSDirectory(luceneIndexDirectory);
-		} catch (IOException ex)
+		}
+		catch (IOException ex)
 		{
 			try
 			{
@@ -291,7 +303,8 @@ public class LuceneManager extends Thread
 				(new SQL()).queryNoRes("update bugs set indexed=0");
 
 				index = new SimpleFSDirectory(luceneIndexDirectory);
-			} catch (IOException | SQLException ex1)
+			}
+			catch (IOException | SQLException ex1)
 			{
 				log.error("Error while initializing lucene, cannot continue", ex1);
 				throw new RuntimeException("Error while initializing lucene, cannot continue", ex1);
@@ -304,7 +317,8 @@ public class LuceneManager extends Thread
 
 			indexWriter = new IndexWriter(index, config);
 			searcherManager = new SearcherManager(indexWriter, true, new MySearchWarmer());
-		} catch (IOException ex)
+		}
+		catch (IOException ex)
 		{
 			log.error("Error while creating the searcher manager", ex);
 		}
