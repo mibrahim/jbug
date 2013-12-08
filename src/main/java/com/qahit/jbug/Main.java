@@ -178,7 +178,7 @@ public class Main
 			return b.toString();
 		}
 
-		ArrayList<String> bugIds = LuceneManager.search(searchFilter, 1000, QueryParser.Operator.OR);
+		ArrayList<String> bugIds = LuceneManager.search(searchFilter, 1000, QueryParser.Operator.AND);
 		return StringUtils.join(bugIds, ",");
 	}
 
