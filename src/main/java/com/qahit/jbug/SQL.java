@@ -126,7 +126,8 @@ public class SQL implements Closeable
 				checkDBVersion();
 			}
 
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e)
+		}
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e)
 		{
 			log.error("Error while instantiating the SQL object", e);
 			System.exit(-1);
@@ -166,10 +167,12 @@ public class SQL implements Closeable
 					}
 				}
 			}
-		} catch (java.sql.SQLNonTransientConnectionException e)
+		}
+		catch (java.sql.SQLNonTransientConnectionException e)
 		{
 			// Do nothing.... this means successfull shutdown
-		} catch (SQLException e)
+		}
+		catch (SQLException e)
 		{
 			log.error("Error closing the SQL connetion:", e);
 		}
@@ -184,14 +187,16 @@ public class SQL implements Closeable
 		try
 		{
 			query("select * from vars");
-		} catch (SQLException e)
+		}
+		catch (SQLException e)
 		{
 			try
 			{
 				log.info("Attempting to create the table vars");
 				queryNoRes("create table vars(var varchar(32), val varchar(256))");
 				queryNoRes("create index vars1 on vars(var)");
-			} catch (SQLException e2)
+			}
+			catch (SQLException e2)
 			{
 				throw new RuntimeException(e2);
 			}
@@ -209,8 +214,7 @@ public class SQL implements Closeable
 	}
 
 	/**
-	 * Upgrades the database to version 001. See
-	 * https://bugzilla.mozilla.org/page.cgi?id=fields.html for field
+	 * Upgrades the database to version 001. See https://bugzilla.mozilla.org/page.cgi?id=fields.html for field
 	 * definitions
 	 */
 	void upgradeToV001() throws SQLException
@@ -333,7 +337,8 @@ public class SQL implements Closeable
 		try
 		{
 			return Integer.parseInt(dbVersionString);
-		} catch (NumberFormatException e)
+		}
+		catch (NumberFormatException e)
 		{
 			return 0;
 		}

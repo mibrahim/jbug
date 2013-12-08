@@ -30,10 +30,12 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>
         <org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>
         <org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>false</org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>
-        <org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>80</org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>120</org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>
         <org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>none</org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>
         <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.continuationIndentSize>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.continuationIndentSize>
         <org-netbeans-modules-editor-indent.text.javascript.CodeStyle.project.continuationIndentSize>4</org-netbeans-modules-editor-indent.text.javascript.CodeStyle.project.continuationIndentSize>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>120</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>
         <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.classDeclBracePlacement>NEW_LINE</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.classDeclBracePlacement>
         <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.otherBracePlacement>NEW_LINE</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.otherBracePlacement>
         <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.methodDeclBracePlacement>NEW_LINE</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.methodDeclBracePlacement>

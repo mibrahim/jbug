@@ -233,8 +233,8 @@ public class Main
 	}
 
 	/**
-	 * Returns the details of several bugs given their comma separated list of
-	 * IDs. The result is formatted as a JSON array.
+	 * Returns the details of several bugs given their comma separated list of IDs. The result is formatted as a JSON
+	 * array.
 	 *
 	 * @param request
 	 *
@@ -245,11 +245,14 @@ public class Main
 	static String getBugs(HttpServletRequest request, SQL sql) throws SQLException
 	{
 		String pfor = request.getParameter("for").trim();
-		if (pfor.length()==0) return "";
+		if (pfor.length() == 0)
+		{
+			return "{\"bugs\":[\n]}";
+		}
 		ResultSet rs = sql.query("select * from bugs where bug_id in (" + pfor + ")");
 		StringBuilder b = new StringBuilder(256);
-				b.append("{\"bugs\":[");
-				boolean first=true;
+		b.append("{\"bugs\":[");
+		boolean first = true;
 		while (rs.next())
 		{
 			if (!first)
@@ -257,11 +260,11 @@ public class Main
 				b.append(",\n");
 			} else
 			{
-				first=false;
+				first = false;
 			}
 			b.append(SQL.currentRowToJSON(rs));
 		}
-			b.append("\n]}");
+		b.append("\n]}");
 		rs.close();
 		return b.toString();
 	}
@@ -492,7 +495,7 @@ public class Main
 					return getProductTargetMilestoneBugs(request, sql);
 				case "getsubtasks":
 					return getSubtasks(request, sql);
-				case "getspertasks":
+				case "getsupertasks":
 					return getSupertasks(request, sql);
 
 				// Sets and updates
@@ -511,7 +514,8 @@ public class Main
 				default:
 					return "Unkown request: " + pget;
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			System.out.append("ERROR while requesting URL: " + request.getRequestURI());
 			throw new SQLException("ERROR while requesting URL: " + request.getRequestURI(), e);
@@ -559,13 +563,15 @@ public class Main
 	private static String getSubtasks(HttpServletRequest request, SQL sql) throws SQLException
 	{
 		String bugid = request.getParameter("for");
-		try(ResultSet rs=sql.query("select subtask from dependencies where supertask="+bugid))
+		try (ResultSet rs = sql.query("select subtask from dependencies where supertask=" + bugid))
 		{
-			StringBuilder b=new StringBuilder(256);
-			while(rs.next())
+			StringBuilder b = new StringBuilder(256);
+			while (rs.next())
 			{
-				if (b.length()>0)
+				if (b.length() > 0)
+				{
 					b.append(",");
+				}
 				b.append(rs.getInt("subtask"));
 			}
 			return b.toString();
@@ -575,13 +581,15 @@ public class Main
 	private static String getSupertasks(HttpServletRequest request, SQL sql) throws SQLException
 	{
 		String bugid = request.getParameter("for");
-		try(ResultSet rs=sql.query("select subtask from dependencies where subtask="+bugid))
+		try (ResultSet rs = sql.query("select supertask from dependencies where subtask=" + bugid))
 		{
-			StringBuilder b=new StringBuilder(256);
-			while(rs.next())
+			StringBuilder b = new StringBuilder(256);
+			while (rs.next())
 			{
-				if (b.length()>0)
+				if (b.length() > 0)
+				{
 					b.append(",");
+				}
 				b.append(rs.getInt("supertask"));
 			}
 			return b.toString();
@@ -593,10 +601,13 @@ public class Main
 		String superTask = request.getParameter("supertask");
 		String subTask = request.getParameter("subtask");
 
-		if (!sql.queryNoRes("insert into dependencies(supertask,subtask) values("+superTask+","+subTask+")"))
+		if (!sql.queryNoRes("insert into dependencies(supertask,subtask) values(" + superTask + "," + subTask + ")"))
+		{
 			return "OK";
-		else
+		} else
+		{
 			return "FAIL";
+		}
 	}
 
 	private static String removeDependency(HttpServletRequest request, SQL sql) throws SQLException
@@ -604,9 +615,12 @@ public class Main
 		String superTask = request.getParameter("supertask");
 		String subTask = request.getParameter("subtask");
 
-		if (!sql.queryNoRes("delete from dependencies where supertask="+superTask+" and subtask="+subTask))
+		if (!sql.queryNoRes("delete from dependencies where supertask=" + superTask + " and subtask=" + subTask))
+		{
 			return "OK";
-		else
+		} else
+		{
 			return "FAIL";
+		}
 	}
 }

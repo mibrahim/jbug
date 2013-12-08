@@ -375,29 +375,124 @@ function showBugDetails()
 	html += "</td></tr></table><br/>";
 	html += "<div class='container' style='width:100%;'>";
 	html += "<div class='row'>";
-	html += "<div class='col-md-6'><h3>Description:</h3>";
+	html += "<div class='col-md-6'>";
+	html += "<h3>Description:</h3>";
 	html += "<div class='bugdescription'>" + bug.DESCRIPTION
 		+ "</div>";
 	html += "</div>"; // col6
 	html += "<div class='col-md-6'>";
-	html += "<h3>Blocked by:";
-	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addDependency,function(){})">+</span></h3>';
-	html += "<h3>Blocks:";
-	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addDependant,function(){})">+</span></h3>';
+	html += "<h3>Sub tasks:";
+	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addSubTask,function(){})">+</span></h3>';
+	html += '<div id="subtasks"></div>';
+	html += "<h3>Super tasks:";
+	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addSuperTask,function(){})">+</span></h3>';
+	html += '<div id="supertasks"></div>';
 	html += "</div>"; // col6
 	html += "</div>"; // Row
 	html += "</div>"; // Container
 	$("#main").html(html);
+	updateIssueDependencies();
 }
 
-function addDependency(id)
+function updateIssueDependencies()
 {
-	alert("id="+id);
+	// Update the Super Tasks
+	$.ajax(
+		{
+			url: "data.jsp?get=getsupertasks&for=" + bugId,
+			context: document.body,
+			async: true
+		}
+	).done(
+		function(data)
+		{
+			$.ajax(
+				{
+					url: "data.jsp?get=bugs&for=" + data,
+					context: document.body,
+					async: true
+				}
+			).done(
+				function(data2)
+				{
+					newbugs = JSON.parse(data2).bugs;
+					html = "";
+					for (var i = 0; i < newbugs.length; i++)
+					{
+						if (i > 9)
+							break;
+						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" + renderBugTitle(newbugs[i]) + "</a><br/>";
+					}
+					$('#supertasks').html(html);
+				}
+			);
+		}
+	);
+
+	// Update the Sub Tasks
+	$.ajax(
+		{
+			url: "data.jsp?get=getsubtasks&for=" + bugId,
+			context: document.body,
+			async: true
+		}
+	).done(
+		function(data)
+		{
+			$.ajax(
+				{
+					url: "data.jsp?get=bugs&for=" + data,
+					context: document.body,
+					async: true
+				}
+			).done(
+				function(data2)
+				{
+					newbugs = JSON.parse(data2).bugs;
+					html = "";
+					for (var i = 0; i < newbugs.length; i++)
+					{
+						if (i > 9)
+							break;
+						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" + renderBugTitle(newbugs[i]) + "</a><br/>";
+					}
+					$('#subtasks').html(html);
+				}
+			);
+		}
+	);
 }
 
-function addDependant(id)
+function addSubTask(id)
 {
-	alert("id="+id);
+	$.ajax(
+		{
+			url: "data.jsp?get=adddependency&supertask=" + bugId + "&subtask=" + id,
+			context: document.body,
+			async: true
+		}
+	).done(
+		function(data)
+		{
+			updateIssueDependencies();
+		}
+	);
+}
+
+function addSuperTask(id)
+{
+	$.ajax(
+		{
+			url: "data.jsp?get=adddependency&supertask=" + id + "&subtask=" + bugId,
+			context: document.body,
+			async: true
+		}
+	).done(
+		function(data)
+		{
+			updateIssueDependencies();
+		}
+	);
 }
 
 function renderBugTitle(bug)
@@ -425,10 +520,11 @@ function yesdeletebug(bugid)
 			url: "data.jsp?get=deletebug&bugid=" + bugid,
 			async: false,
 			context: document.body
-		}).done(function(data)
-	{
-		window.location = '';
-	});
+		})
+		.done(function(data)
+		{
+			window.location = '';
+		});
 }
 
 function bugDelete()
