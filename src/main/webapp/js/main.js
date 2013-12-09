@@ -381,10 +381,10 @@ function showBugDetails()
 		+ "</div>";
 	html += "</div>"; // col6
 	html += "<div class='col-md-6'>";
-	html += "<h3>Sub tasks:";
+	html += "<h3>Sub issues:";
 	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addSubTask,function(){})">+</span></h3>';
 	html += '<div id="subtasks"></div>';
-	html += "<h3>Super tasks:";
+	html += "<h3>Super issues:";
 	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addSuperTask,function(){})">+</span></h3>';
 	html += '<div id="supertasks"></div>';
 	html += "</div>"; // col6
@@ -497,19 +497,29 @@ function addSuperTask(id)
 
 function renderBugTitle(bug)
 {
-	var title = "";
+	var title = "<a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>";
+
+	var zeroes = "00000";
+	title += "[" + zeroes.substring(bug.BUG_ID.length) + bug.BUG_ID + "] ";
+
 	var lcTitle = bug.TITLE.toLowerCase();
 
 	if (lcTitle.indexOf("epic:") === 0)
-		title += "<span class='btn btn-warning'><i class='fa fa-globe'></i></span> ";
+		title += "<i class='fa fa-globe'></i> ";
 	if (lcTitle.indexOf("story:") === 0)
-		title += "<span class='btn btn-warning'><i class='fa fa-list-alt'></i></span> ";
+		title += "<i class='fa fa-list-alt'></i> ";
 	if (lcTitle.indexOf("task:") === 0)
-		title += "<span class='btn btn-warning'><i class='fa fa-gear'></i></span> ";
+		title += "<i class='fa fa-gear'></i> ";
 	if (lcTitle.indexOf("subtask:") === 0)
-		title += "<span class='btn btn-warning'><i class='fa fa-gears'></i></span> ";
+		title += "<i class='fa fa-gears'></i> ";
 
 	title += bug.TITLE;
+
+	title += "</a>";
+
+	if (bug.STATUS === "3")
+		title = "<span style='text-decoration: line-through;'>" + title + "</span>";
+
 	return title;
 }
 
@@ -881,10 +891,7 @@ function renderMilestoneProgressBar(product, milestone)
 	for (i = 0; i < bugs.length - 1; i++)
 	{
 		var status = bugs[i].split("#");
-		var zeroes = "00000";
-		var bugid = zeroes.substring(status[0].length) + status[0];
-		var thisBug = "<a href='#do=bugdetails&bugid=" + status[0] + "'>["
-			+ bugid + "]</a> ";
+		var thisBug = "";
 
 		// Get the bug summary
 		var bugdetails;
@@ -899,7 +906,7 @@ function renderMilestoneProgressBar(product, milestone)
 			// open,inproress,paused
 			bugdetails = JSON.parse(data);
 		});
-		thisBug += bugdetails.TITLE;
+		thisBug += renderBugTitle(bugdetails);
 		switch (status[1])
 		{
 			case '0':
@@ -910,8 +917,6 @@ function renderMilestoneProgressBar(product, milestone)
 				inprogress++;
 				break;
 			case '3':
-				thisBug = "<span style='text-decoration: line-through;'>"
-					+ thisBug + "</span>";
 				complete++;
 				break;
 		}
