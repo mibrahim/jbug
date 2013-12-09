@@ -495,9 +495,12 @@ function addSuperTask(id)
 	);
 }
 
-function renderBugTitle(bug)
+function renderBugTitle(bug, nolinks)
 {
-	var title = "<a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>";
+	var title = "";
+
+	if (typeof nolinks === 'undefined')
+		title += "<a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>";
 
 	var zeroes = "00000";
 	title += "[" + zeroes.substring(bug.BUG_ID.length) + bug.BUG_ID + "] ";
@@ -515,7 +518,8 @@ function renderBugTitle(bug)
 
 	title += bug.TITLE;
 
-	title += "</a>";
+	if (typeof nolinks === 'undefined')
+		title += "</a>";
 
 	if (bug.STATUS === "3")
 		title = "<span style='text-decoration: line-through;'>" + title + "</span>";
@@ -1054,7 +1058,9 @@ function findbugsearch()
 					{
 						if (i > 9)
 							break;
-						html += "<a href='javascript:sendBugId(" + newbugs[i].BUG_ID + ")'>" + renderBugTitle(newbugs[i]) + "</a><br/>";
+						html += "<a href='javascript:sendBugId(" + newbugs[i].BUG_ID + ")'>" +
+							renderBugTitle(newbugs[i], false) +
+							"</a><br/>";
 					}
 					$('#findbugrsults').html(html);
 				}
