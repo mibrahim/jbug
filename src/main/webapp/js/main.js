@@ -421,7 +421,9 @@ function updateIssueDependencies()
 					{
 						if (i > 9)
 							break;
-						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" + renderBugTitle(newbugs[i]) + "</a><br/>";
+						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
+							renderBugTitle(newbugs[i]) + "</a> " +
+							"<a href='javascript:removeSuperTask(" + newbugs[i].BUG_ID + ")'>[X]</a><br/>";
 					}
 					$('#supertasks').html(html);
 				}
@@ -454,7 +456,9 @@ function updateIssueDependencies()
 					{
 						if (i > 9)
 							break;
-						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" + renderBugTitle(newbugs[i]) + "</a><br/>";
+						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
+							renderBugTitle(newbugs[i]) + "</a> " +
+							"<a href='javascript:removeSubTask(" + newbugs[i].BUG_ID + ")'>[X]</a><br/>";
 					}
 					$('#subtasks').html(html);
 				}
@@ -479,11 +483,43 @@ function addSubTask(id)
 	);
 }
 
+function removeSubTask(id)
+{
+	$.ajax(
+		{
+			url: "data.jsp?get=removedependency&supertask=" + bugId + "&subtask=" + id,
+			context: document.body,
+			async: true
+		}
+	).done(
+		function(data)
+		{
+			updateIssueDependencies();
+		}
+	);
+}
+
 function addSuperTask(id)
 {
 	$.ajax(
 		{
 			url: "data.jsp?get=adddependency&supertask=" + id + "&subtask=" + bugId,
+			context: document.body,
+			async: true
+		}
+	).done(
+		function(data)
+		{
+			updateIssueDependencies();
+		}
+	);
+}
+
+function removeSuperTask(id)
+{
+	$.ajax(
+		{
+			url: "data.jsp?get=removedependency&supertask=" + id + "&subtask=" + bugId,
 			context: document.body,
 			async: true
 		}
