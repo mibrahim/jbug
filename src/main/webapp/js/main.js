@@ -241,7 +241,7 @@ function showCurrentBugPage()
 	if (currentPage > nPages)
 		currentPage = nPages;
 
-	navBar = "<br/><center> ";
+	navBar = "<center> ";
 	navBar += pageLink(1, "<i class='glyphicon glyphicon-circle-arrow-left'></i>", false);
 	start = 0;
 	regions =
