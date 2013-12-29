@@ -425,6 +425,7 @@ function updateIssueDependencies()
 							renderBugTitle(newbugs[i]) + "</a> " +
 							"<a href='javascript:removeSuperTask(" + newbugs[i].BUG_ID + ")'>[X]</a><br/>";
 					}
+
 					$('#supertasks').html(html);
 				}
 			);
@@ -538,6 +539,9 @@ function renderBugTitle(bug, nolinks)
 	if (typeof nolinks === 'undefined')
 		title += "<a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>";
 
+	if (bug.STATUS === "3")
+		title += "<span style='text-decoration: line-through;'>";
+
 	var zeroes = "00000";
 	title += "[" + zeroes.substring(bug.BUG_ID.length) + bug.BUG_ID + "] ";
 
@@ -554,11 +558,11 @@ function renderBugTitle(bug, nolinks)
 
 	title += bug.TITLE;
 
+	if (bug.STATUS === "3")
+		title += "</span>";
+
 	if (typeof nolinks === 'undefined')
 		title += "</a>";
-
-	if (bug.STATUS === "3")
-		title = "<span style='text-decoration: line-through;'>" + title + "</span>";
 
 	return title;
 }
