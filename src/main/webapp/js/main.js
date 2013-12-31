@@ -419,10 +419,8 @@ function updateIssueDependencies()
 					html = "";
 					for (var i = 0; i < newbugs.length; i++)
 					{
-						if (i > 9)
-							break;
 						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
-							renderBugTitle(newbugs[i]) + "</a> " +
+							renderBugTitle(newbugs[i], null, 64) + "</a> " +
 							"<a href='javascript:removeSuperTask(" + newbugs[i].BUG_ID + ")'>[X]</a><br/>";
 					}
 
@@ -455,10 +453,8 @@ function updateIssueDependencies()
 					html = "";
 					for (var i = 0; i < newbugs.length; i++)
 					{
-						if (i > 9)
-							break;
 						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
-							renderBugTitle(newbugs[i]) + "</a> " +
+							renderBugTitle(newbugs[i], null, 64) + "</a> " +
 							"<a href='javascript:removeSubTask(" + newbugs[i].BUG_ID + ")'>[X]</a><br/>";
 					}
 					$('#subtasks').html(html);
@@ -532,9 +528,12 @@ function removeSuperTask(id)
 	);
 }
 
-function renderBugTitle(bug, nolinks)
+function renderBugTitle(bug, nolinks, maxlength)
 {
 	var title = "";
+
+	if (maxlength === null)
+		maxlength = 1000;
 
 	if (typeof nolinks === 'undefined')
 		title += "<a href='#do=bugdetails&bugid=" + bug.BUG_ID + "'>";
@@ -556,7 +555,7 @@ function renderBugTitle(bug, nolinks)
 	if (lcTitle.indexOf("subtask:") === 0)
 		title += "<i class='fa fa-gears'></i> ";
 
-	title += bug.TITLE;
+	title += bug.TITLE.substring(0, maxlength);
 
 	if (bug.STATUS === "3")
 		title += "</span>";
