@@ -419,8 +419,8 @@ function updateIssueDependencies()
 					html = "";
 					for (var i = 0; i < newbugs.length; i++)
 					{
-						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
-							renderBugTitle(newbugs[i], null, 64) + "</a> " +
+						html += "<a style='font-family: monospace;' href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
+							renderBugTitle(newbugs[i], null, 23) + "</a> " +
 							"<a href='javascript:removeSuperTask(" + newbugs[i].BUG_ID + ")'>[X]</a><br/>";
 					}
 
@@ -453,8 +453,8 @@ function updateIssueDependencies()
 					html = "";
 					for (var i = 0; i < newbugs.length; i++)
 					{
-						html += "<a href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
-							renderBugTitle(newbugs[i], null, 64) + "</a> " +
+						html += "<a style='font-family: monospace;' href='#do=bugdetails&bugid=" + newbugs[i].BUG_ID + "'>" +
+							renderBugTitle(newbugs[i], null, 23) + "</a> " +
 							"<a href='javascript:removeSubTask(" + newbugs[i].BUG_ID + ")'>[X]</a><br/>";
 					}
 					$('#subtasks').html(html);
@@ -547,17 +547,33 @@ function renderBugTitle(bug, nolinks, maxlength)
 	title += "[" + zeroes.substring(bug.BUG_ID.length) + bug.BUG_ID + "] ";
 
 	var lcTitle = bug.TITLE.toLowerCase();
+	var finalTitle = bug.TITLE;
 
 	if (lcTitle.indexOf("epic:") === 0)
+	{
 		title += "<i class='fa fa-globe'></i> ";
-	if (lcTitle.indexOf("story:") === 0)
-		title += "<i class='fa fa-list-alt'></i> ";
-	if (lcTitle.indexOf("task:") === 0)
-		title += "<i class='fa fa-gear'></i> ";
-	if (lcTitle.indexOf("subtask:") === 0)
-		title += "<i class='fa fa-gears'></i> ";
+		finalTitle = finalTitle.substring(5);
+	}
 
-	title += bug.TITLE.substring(0, maxlength);
+	if (lcTitle.indexOf("story:") === 0)
+	{
+		title += "<i class='fa fa-list-alt'></i> ";
+		finalTitle = finalTitle.substring(6);
+	}
+
+	if (lcTitle.indexOf("task:") === 0)
+	{
+		title += "<i class='fa fa-gear'></i> ";
+		finalTitle = finalTitle.substring(5);
+	}
+
+	if (lcTitle.indexOf("subtask:") === 0)
+	{
+		title += "<i class='fa fa-gears'></i> ";
+		finalTitle = finalTitle.substring(8);
+	}
+
+	title += finalTitle.substring(0, maxlength);
 
 	if (bug.STATUS === "3")
 		title += "</span>";
