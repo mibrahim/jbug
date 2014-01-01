@@ -382,10 +382,10 @@ function showBugDetails()
 	html += "</div>"; // col6
 	html += "<div class='col-md-6'>";
 	html += "<h3>Sub issues:";
-	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addSubTask,function(){})">+</span></h3>';
+	html += '<span class="btn btn-success" onclick="findBugPage(\'Add dependency\',addSubTask,function(){})">+</span></h3>';
 	html += '<div id="subtasks"></div>';
 	html += "<h3>Super issues:";
-	html += '<span class="btn btn-success" onclick="findBug(\'Add dependency\',addSuperTask,function(){})">+</span></h3>';
+	html += '<span class="btn btn-success" onclick="findBugPage(\'Add dependency\',addSuperTask,function(){})">+</span></h3>';
 	html += '<div id="supertasks"></div>';
 	html += "</div>"; // col6
 	html += "</div>"; // Row
@@ -475,6 +475,7 @@ function addSubTask(id)
 	).done(
 		function(data)
 		{
+			showBugDetails();
 			updateIssueDependencies();
 		}
 	);
@@ -507,6 +508,7 @@ function addSuperTask(id)
 	).done(
 		function(data)
 		{
+			showBugDetails();
 			updateIssueDependencies();
 		}
 	);
@@ -1069,6 +1071,19 @@ function findBug(dtitle, onDone, onCancel)
 					}}]
 		});
 	;
+}
+
+function findBugPage(dtitle, onDone, onCancel)
+{
+	globalOnDone = onDone;
+
+	html = "<div class='input-group'>" +
+		"<input type='text' id='findbugkeywords' class='form-control'/>" +
+		"<span class='input-group-btn'><button class='btn btn-warning' onclick='findbugsearch()' type='button'>Search</button></span>" +
+		"</div>" +
+		"<div id='findbugrsults' style='height:150px;'></div>";
+
+	$("#main").html(html);
 }
 
 function findbugsearch()
