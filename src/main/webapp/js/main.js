@@ -995,6 +995,8 @@ function viewProductRoadmap(product)
 	// Get product milestones
 	var html = "<h1>" + product + "</h1>";
 	html += "<div style='font-family: monospace;'>";
+	var d = new Date();
+	var start = d.getTime();
 	$.ajax(
 		{
 			url: "data.jsp?get=producttarget_milestones&product=" + product,
@@ -1004,6 +1006,9 @@ function viewProductRoadmap(product)
 		.done(
 			function(data)
 			{
+				var d2 = new Date();
+				var end = d2.getTime();
+				console.log("prod milestones time = " + (end-start));
 				var milestones = data.split(",");
 				for (a = 0; a < milestones.length; a++)
 				{
@@ -1013,6 +1018,9 @@ function viewProductRoadmap(product)
 							milestones[a])
 						+ "<br/>";
 				}
+				var d3 = new Date();
+				var end2 = d3.getTime();
+				console.log("Rendering all = " + (end2-end));
 			});
 	html += "</div>";
 
