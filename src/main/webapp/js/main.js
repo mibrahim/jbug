@@ -22,7 +22,7 @@ var PRIORITY =
 
 // Location update detector
 var oldLocation = location.href;
-setInterval(function()
+setInterval(function ()
 {
 	if (location.href !== oldLocation)
 	{
@@ -111,7 +111,7 @@ function updateBugStatusBar()
 			url: "data.jsp?get=openbugcount",
 			context: document.body,
 			async: true
-		}).done(function(data)
+		}).done(function (data)
 	{
 		$("#openbugs").html(data);
 	});
@@ -128,7 +128,7 @@ function updateOpenBugsList()
 			async: false
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			bugList = data;
 		}
@@ -147,7 +147,7 @@ function search()
 			async: false
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			bugList = data;
 			currentPage = 1;
@@ -166,7 +166,7 @@ function showOpenBugs()
 		{
 			url: "data.jsp?get=openbugids",
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		bugList = data;
 		showCurrentPage();
@@ -289,7 +289,7 @@ function showCurrentBugPage()
 			url: "data.jsp?get=bugssummaries&for=" + ids,
 			async: false,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		json = data;
 	});
@@ -345,7 +345,7 @@ function showBugDetails()
 			url: "data.jsp?get=bug&for=" + bugId,
 			async: false,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		bug = JSON.parse(data);
 	});
@@ -404,7 +404,7 @@ function updateIssueDependencies()
 			async: true
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			$.ajax(
 				{
@@ -413,7 +413,7 @@ function updateIssueDependencies()
 					async: true
 				}
 			).done(
-				function(data2)
+				function (data2)
 				{
 					newbugs = JSON.parse(data2).bugs;
 					html = "";
@@ -438,7 +438,7 @@ function updateIssueDependencies()
 			async: true
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			$.ajax(
 				{
@@ -447,7 +447,7 @@ function updateIssueDependencies()
 					async: true
 				}
 			).done(
-				function(data2)
+				function (data2)
 				{
 					newbugs = JSON.parse(data2).bugs;
 					html = "";
@@ -473,7 +473,7 @@ function addSubTask(id)
 			async: true
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			showBugDetails();
 			updateIssueDependencies();
@@ -490,7 +490,7 @@ function removeSubTask(id)
 			async: true
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			updateIssueDependencies();
 		}
@@ -506,7 +506,7 @@ function addSuperTask(id)
 			async: true
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			showBugDetails();
 			updateIssueDependencies();
@@ -523,7 +523,7 @@ function removeSuperTask(id)
 			async: true
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			updateIssueDependencies();
 		}
@@ -592,7 +592,7 @@ function yesdeletebug(bugid)
 			async: false,
 			context: document.body
 		})
-		.done(function(data)
+		.done(function (data)
 		{
 			window.location = '';
 		});
@@ -605,7 +605,7 @@ function bugDelete()
 			url: "data.jsp?get=bug&for=" + bugId,
 			async: false,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		bug = JSON.parse(data);
 	});
@@ -659,7 +659,7 @@ function bugEdit()
 				url: "data.jsp?get=bug&for=" + bugId,
 				async: false,
 				context: document.body
-			}).done(function(data)
+			}).done(function (data)
 		{
 			bug = JSON.parse(data);
 		});
@@ -765,7 +765,7 @@ function bugEdit()
 			url: "data.jsp?get=users",
 			async: true,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 
 		if (data === undefined || data.indexOf(jBugUser) === -1)
@@ -795,7 +795,7 @@ function bugEdit()
 			url: "data.jsp?get=products",
 			async: true,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
@@ -813,7 +813,7 @@ function bugEdit()
 			url: "data.jsp?get=components",
 			async: true,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
@@ -831,7 +831,7 @@ function bugEdit()
 			url: "data.jsp?get=versions",
 			async: true,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
@@ -849,7 +849,7 @@ function bugEdit()
 			url: "data.jsp?get=target_milestones",
 			async: true,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		if (data !== undefined && data.length > 0)
 		{
@@ -898,7 +898,7 @@ function saveBug()
 			url: url,
 			async: true,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		updateBugStatusBar();
 		updateOpenBugsList();
@@ -930,64 +930,53 @@ function svgDoubleProgressBar(completed, inprogress)
 	return svg;
 }
 
-function renderMilestoneProgressBar(product, milestone)
+function renderMilestoneProgressBar(product, milestone, divid)
 {
 	var myhtml = "";
-	dataurl = "data.jsp?get=producttarget_milestonebugs&product=" + product
+	dataurl = "data.jsp?get=producttarget_milestonebugsdetails&product=" + product
 		+ "&target_milestone=" + milestone;
+	console.log("URL: " + dataurl);
 	$.ajax(
 		{
 			url: dataurl,
-			async: false,
+			async: true,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		// Count which ones are complete, and which are open,inproress,paused
-		bugs = (data + ",").split(",");
-	});
-	complete = 0.;
-	inprogress = 0;
-	open = 0;
-	var buglist = "";
-	for (i = 0; i < bugs.length - 1; i++)
-	{
-		var status = bugs[i].split("#");
-		var thisBug = "";
+		bugs = JSON.parse(data).bugs;
+		complete = 0;
+		inprogress = 0;
+		open = 0;
+		var buglist = "";
+		for (i = 0; i < bugs.length - 1; i++)
+		{
+			var thisBug = "";
 
-		// Get the bug summary
-		var bugdetails;
-		$.ajax(
+			// Get the bug summary
+			thisBug += renderBugTitle(bugs[i]);
+			switch (bugs[i].STATUS)
 			{
-				url: "data.jsp?get=bug&for=" + status[0],
-				async: false,
-				context: document.body
-			}).done(function(data)
-		{
-			// Count which ones are complete, and which are
-			// open,inproress,paused
-			bugdetails = JSON.parse(data);
-		});
-		thisBug += renderBugTitle(bugdetails);
-		switch (status[1])
-		{
-			case '0':
-				open++;
-				break;
-			case '1':
-			case '2':
-				inprogress++;
-				break;
-			case '3':
-				complete++;
-				break;
+				case '0':
+					open++;
+					break;
+				case '1':
+				case '2':
+					inprogress++;
+					break;
+				case '3':
+					complete++;
+					break;
+			}
+			buglist += thisBug + "<br/>";
 		}
-		buglist += thisBug + "<br/>";
-	}
-	total = open + inprogress + complete;
-	svg = svgDoubleProgressBar(100.0 * complete / total, 100.0 * inprogress / total);
-	myhtml += svg + "<br/><b>" + open + " open, " + inprogress
-		+ " inprogress, " + complete + " complete</b><br/>" + buglist;
-	return myhtml;
+		total = open + inprogress + complete;
+		svg = svgDoubleProgressBar(100.0 * complete / total, 100.0 * inprogress / total);
+		myhtml += svg + "<br/><b>" + open + " open, " + inprogress
+			+ " inprogress, " + complete + " complete</b><br/>" + buglist;
+		$("#" + divid).html(myhtml);
+		console.log("Finished " + divid);
+	});
 }
 
 function viewProductRoadmap(product)
@@ -997,6 +986,7 @@ function viewProductRoadmap(product)
 	html += "<div style='font-family: monospace;'>";
 	var d = new Date();
 	var start = d.getTime();
+	var milestones;
 	$.ajax(
 		{
 			url: "data.jsp?get=producttarget_milestones&product=" + product,
@@ -1004,27 +994,26 @@ function viewProductRoadmap(product)
 			context: document.body
 		})
 		.done(
-			function(data)
+			function (data)
 			{
 				var d2 = new Date();
 				var end = d2.getTime();
-				console.log("prod milestones time = " + (end-start));
-				var milestones = data.split(",");
+				console.log("prod milestones time = " + (end - start));
+				milestones = data.split(",");
 				for (a = 0; a < milestones.length; a++)
-				{
 					html += milestones[a]
-						+ "<br/>"
-						+ renderMilestoneProgressBar(product,
-							milestones[a])
-						+ "<br/>";
-				}
+						+ "<div id='milestone" + a + "'></div>";
 				var d3 = new Date();
 				var end2 = d3.getTime();
-				console.log("Rendering all = " + (end2-end));
+				console.log("Rendering all = " + (end2 - end));
 			});
 	html += "</div>";
 
 	$("#main").html(html);
+
+	for (a = 0; a < milestones.length; a++)
+		renderMilestoneProgressBar(product,
+			milestones[a], "milestone" + a);
 }
 
 function roadMap()
@@ -1043,7 +1032,7 @@ function roadMap()
 			url: "data.jsp?get=products",
 			async: false,
 			context: document.body
-		}).done(function(data)
+		}).done(function (data)
 	{
 		products = data.split(",");
 		products.sort();
@@ -1086,10 +1075,10 @@ function findBug(dtitle, onDone, onCancel)
 		.appendTo('body')
 		.dialog({
 			width: 600,
-			beforeclose: function(event, ui) {
+			beforeclose: function (event, ui) {
 				$("#findBug").remove();
 			},
-			buttons: [{text: "Cancel", click: function() {
+			buttons: [{text: "Cancel", click: function () {
 						$(this).remove();
 						onCancel();
 					}}]
@@ -1119,7 +1108,7 @@ function findbugsearch()
 			async: true
 		}
 	).done(
-		function(data)
+		function (data)
 		{
 			$.ajax(
 				{
@@ -1128,7 +1117,7 @@ function findbugsearch()
 					async: true
 				}
 			).done(
-				function(data2)
+				function (data2)
 				{
 					newbugs = JSON.parse(data2).bugs;
 					html = "Found " + newbugs.length + " issues <br/>";
