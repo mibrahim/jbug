@@ -558,7 +558,7 @@ function renderBugTitle(bug, nolinks, maxlength)
     if (lcTitle.indexOf("bug:") === 0)
     {
         title += "<i class='fa fa-bug'></i> ";
-        finalTitle = finalTitle.substring(5);
+        finalTitle = finalTitle.substring(4);
     }
 
     if (lcTitle.indexOf("story:") === 0)
