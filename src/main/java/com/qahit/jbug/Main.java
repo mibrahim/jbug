@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -229,7 +230,7 @@ public class Main {
         ResultSet rs = sql
                 .query(
                         "select bug_id,title,description,assigned_to,reporter,status,creation_ts,description,priority from bugs where bug_id in ("
-                        + pfor + ")");
+                                + pfor + ")");
         StringBuilder b = new StringBuilder(256);
         while (rs.next()) {
             if (b.length() > 0) {
@@ -475,7 +476,7 @@ public class Main {
     }
 
     private static String getProductTargetMilestoneBugsDetails(HttpServletRequest request,
-            SQL sql) throws SQLException {
+                                                               SQL sql) throws SQLException {
         String target_milestone = request.getParameter("target_milestone");
         String product = request.getParameter("product");
         ResultSet rs = sql.query("select * from bugs where "
@@ -520,7 +521,7 @@ public class Main {
     }
 
     private static String getProductTargetMilestoneBugsHeirarchy(HttpServletRequest request,
-            SQL sql) throws SQLException {
+                                                                 SQL sql) throws SQLException {
         String target_milestone = request.getParameter("target_milestone");
         String product = request.getParameter("product");
         ResultSet rs = sql.query("select * from bugs where "
@@ -580,7 +581,7 @@ public class Main {
     }
 
     private static String getProductTargetMilestones(HttpServletRequest request,
-            SQL sql) throws SQLException {
+                                                     SQL sql) throws SQLException {
         String product = request.getParameter("product");
         ResultSet rs = sql.query("select distinct(target_milestone) as"
                 + " target_milestone from bugs where product='"

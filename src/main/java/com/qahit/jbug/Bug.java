@@ -5,7 +5,6 @@
 package com.qahit.jbug;
 
 /**
- *
  * @author mosama
  */
 public class Bug {
