@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#"><i class="glyphicon glyphicon-home"></i> jBug</a>
+        <a class="navbar-brand" href="#do=home"><i class="glyphicon glyphicon-home"></i> jBug</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -18,12 +18,12 @@
             <li><a href="#do=roadmap" title="New bug"><i class="glyphicon glyphicon-road"></i> Road map</a></li>
             <li><a><b>Open Bugs:</b> <span id="openbugs" class="badge"></span></a></li>
             <li><a id="grv" href="javascript:getUserEmail();"></a></li>
+            <li><form onsubmit="return search();" id='searchform' class="navbar-form navbar-right" role="search">
+                <div class="form-group" style="width:300px">
+                    <input type="text" id="searchbar" name="searchbar" class="form-control" placeholder="Search">
+                </div>
+                <a id='searchbutton' href="javascript:search()" class="btn btn-primary">&Gt;</a>
+            </form></li>
         </ul>
-        <form onsubmit="return search();" id='searchform' class="navbar-form navbar-right" role="search">
-            <div class="form-group">
-                <input type="text" id="searchbar" name="searchbar" class="form-control" placeholder="Search">
-            </div>
-			<a id='searchbutton' href="javascript:search()" class="btn btn-primary">&Gt;</a>
-        </form>
     </div><!-- /.navbar-collapse -->
 </div>

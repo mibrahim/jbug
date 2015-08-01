@@ -333,7 +333,7 @@ public class Main {
                 .prepareStatement("update bugs "
                         + "set title=? , description=? , reporter=? , assigned_to=? , "
                         + "priority=? , product=? , component=? , version=? , target_milestone=?, "
-                        + "status=?, modification_ts=?, easiness=? where bug_id=?");
+                        + "status=?, modification_ts=?, easiness=?, indexed=0 where bug_id=?");
 
         stmt.setString(1, request.getParameter("title").trim());
         stmt.setString(2, request.getParameter("description").trim());
